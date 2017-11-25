@@ -12,23 +12,20 @@ import math
 def orbita_circular (planeta,id,p1):
     planet = Planetas(planeta)
     res = [None]*4
+    res[id] = p1
     if id == 0:
-        res[0] = p1
         res[1] = p1 + planet.radius
         res[2] = 2*math.pi*math.sqrt((res[1]**3)/planet.u)
         res[3] = math.sqrt(planet.u/res[1])
     elif id == 1:
-        res[1] = p1
         res[0] = res[1] - planet.radius
         res[2] = 2 * math.pi * math.sqrt((res[1] ** 3) / planet.u)
         res[3] = math.sqrt(planet.u / res[1])
     elif id == 2:
-        res[2] = p1
         res[1] = ((res[2] * math.sqrt(planet.u))/(2 * math.pi)) ** (2/3)
         res[0] = res[1] - planet.radius
         res[3] = math.sqrt(planet.u / res[1])
     elif id == 3:
-        res[3] = p1
         res[1] = planet.u / (res[3] ** 2)
         res[0] = res[1] - planet.radius
         res[2] = 2*math.pi*math.sqrt((res[1]**3)/planet.u)
@@ -48,11 +45,56 @@ def orbita_circular (planeta,id,p1):
 def orbita_eliptica (planeta,id1,id2,p1,p2):
     planet = Planetas(planeta)
     res = [None]*8
-    if (p1 == 1 and p2 == 2) or (p1 == 3 and p2 == 4) or  (p1 == 5 and p2 == 6):
+    if (id1 == 0 and id2 == 1) or (id1 == 3 and id2 == 4) or  (id1 == 5 and id2 == 6):
         print('Erro: Inseridos dois valores dependentes')
-    elif
-        d
+    else:
+        res[id1] = p1
+        res[id2] = p2
+        #determinação dos parametros dependentes
+        if id1 == 0:
+            res[1] = res[0] + planet.radius
+        elif id1 == 1:
+            res[0] = res[1] - planet.radius
+        elif id1 == 3:
+            res[4] = ((2 * math.pi)/ math.sqrt(planet.u)) * res[3] ** (3 / 2)
+        elif id1 == 4:
+            res[3] = ((res[4] * math.sqrt(planet.u)) / (2 * math.pi)) ** (2 / 3)
+        elif id1 == 5:
+            res[6] = res[5] + planet.radius
+        elif id1 == 6:
+            res[5] = res[6] - planet.radius
 
+        if id2 == 3:
+            res[4] = ((2 * math.pi)/ math.sqrt(planet.u)) * res[3] ** (3 / 2)
+        elif id2 == 4:
+            res[3] = ((res[4] * math.sqrt(planet.u)) / (2 * math.pi)) ** (2 / 3)
+        elif id2 == 5:
+            res[6] = res[5] + planet.radius
+        elif id2 == 6:
+            res[5] = res[6] - planet.radius
+
+        #determinação de rp, e, a, ra. É suposto ter 2 destes parâmetros
+        if res[2] != 0:
+            if res[1] != 0: # e rp
+                res[3] = res[1]/(1 - res[2])
+                res[6] = res[1] * (1 + res[2])/(1 - res[2])
+            elif res[3] != 0: # e a
+                res[1] = res[3] * (1 - res[2])
+                res[6] = res[3] * (1 + res[2])
+            elif res[6] != 0: # e ra (n usei o else para prevenir erros)
+                res[1] = res[6] * (1 - res[2])/(1 + res[2])
+                res[3] = res[6]/(1 + res[2])
+        else:
+            if res[1] != 0:
+                if res[3] != 0: # rp a
+                    res[2] = 1 - res[1]/res[3]
+                    res[6] = 2 * res[3] - res[1]
+                else: # rp ra
+                    res[2] = (res[6] - res[1])/(res[6] + res[1])
+                    res[3] = (res[1] + res[6])/2
+            else: # a ra
+                res[1] = 2 * res[3] - res[6]
+                res[3] = res[6]/res[3] - 1
     return res
 
 
