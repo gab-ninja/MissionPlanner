@@ -144,9 +144,9 @@ class Planetas:
 
 
 
-print(orbita_circular(0,2,5400))
-print(['%.10f' % elem for elem in orbita_eliptica(0,0,593,5,39770)])
-print(orbita_desconhecida(0,6652.555468783185, 7.740599773454766, 0))
-print(orbita_desconhecida(0,46148.14, 1.5056796288, 0))
+#print(orbita_circular(0,2,5400))
+#print(['%.10f' % elem for elem in orbita_eliptica(0,0,593,5,39770)])
+#print(orbita_desconhecida(0,6652.555468783185, 7.740599773454766, 0))
+#print(orbita_desconhecida(0,46148.14, 1.5056796288, 0))
 
 

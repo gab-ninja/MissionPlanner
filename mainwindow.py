@@ -221,6 +221,13 @@ class Ui_MainWindow(object):
         CircularWindow.show()
 
 class Ui_CircularWindow(object):
+    def __init__(self):
+        self.periodo = 0  # periodo em segundos
+        self.periodo_unit = 0 # tipo 0 que é segundos
+        self.altitude = 0
+        self.raio = 0
+        self.velocidade = 0
+
     def setupUi(self, CircularWindow):
         CircularWindow.setObjectName("CircularWindow")
         CircularWindow.resize(1172, 534)
@@ -318,6 +325,7 @@ class Ui_CircularWindow(object):
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
+        self.comboBox.currentIndexChanged.connect(self.on_combobox_changed, self.comboBox.currentIndex())
         self.label_7 = QtWidgets.QLabel(self.groupBox)
         self.label_7.setGeometry(QtCore.QRect(40, 210, 271, 16))
         font = QtGui.QFont()
@@ -406,6 +414,10 @@ class Ui_CircularWindow(object):
         self.lineEdit_2.clear()
         self.lineEdit_3.clear()
         self.lineEdit_4.clear()
+        self.periodo = 0
+        self.raio = 0
+        self.velocidade = 0
+        self.altitude = 0
 
     def bt_exit(self):
         CircularWindow.close()
@@ -421,10 +433,24 @@ class Ui_CircularWindow(object):
                 QMessageBox.critical(CircularWindow, "Error", "The altitude value is not valid")
                 return 0
                 pass
-            [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
-            ui_circ.lineEdit_2.setText('%.6f' % raio)
-            ui_circ.lineEdit_3.setText('%.6f' % periodo)
-            ui_circ.lineEdit_4.setText('%.6f' % velocidade)
+            [self.altitude, self.raio, self.periodo, self.velocidade] = orbita_circular(planeta, id, p1)
+            ui_circ.lineEdit_2.setText('%.6f' % self.raio)
+            ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
+            aux = self.periodo  # (Seconds)
+            if self.comboBox.currentIndex() == 0:  # s
+                ui_circ.lineEdit_3.setText('%.6f' % aux)
+            elif self.comboBox.currentIndex() == 1:  # h
+                aux /= 3600
+                hours = int(aux)
+                aux -= hours
+                aux *= 60
+                minutes = int(aux)
+                aux -= minutes
+                secunds = aux * 60
+                ui_circ.lineEdit_3.setText('%dh %dm %.2fs' % (hours,  minutes, secunds))
+            else:  # days
+                aux /= (3600*24)
+                ui_circ.lineEdit_3.setText('%.6f' % aux)
         else:
             p1 = ui_circ.lineEdit_2.text().replace(',', '.')
             if p1:
@@ -435,10 +461,24 @@ class Ui_CircularWindow(object):
                     QMessageBox.critical(CircularWindow, "Error", "The radius value is not valid")
                     return 0
                     pass
-                [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
-                ui_circ.lineEdit.setText('%.6f' % altitude)
-                ui_circ.lineEdit_3.setText('%.6f' % periodo)
-                ui_circ.lineEdit_4.setText('%.6f' % velocidade)
+                [self.altitude, self.raio, self.periodo, self.velocidade] = orbita_circular(planeta, id, p1)
+                ui_circ.lineEdit.setText('%.6f' % self.altitude)
+                ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
+                aux = self.periodo  # (Seconds)
+                if self.comboBox.currentIndex() == 0:  # s
+                    ui_circ.lineEdit_3.setText('%.6f' % aux)
+                elif self.comboBox.currentIndex() == 1:  # h
+                    aux /= 3600
+                    hours = int(aux)
+                    aux -= hours
+                    aux *= 60
+                    minutes = int(aux)
+                    aux -= minutes
+                    secunds = aux * 60
+                    ui_circ.lineEdit_3.setText('%dh %dm %.2fs' % (hours, minutes, secunds))
+                else:  # days
+                    aux /= (3600 * 24)
+                    ui_circ.lineEdit_3.setText('%.6f' % aux)
             else:
                 p1 = ui_circ.lineEdit_3.text().replace(',', '.')
                 if p1:
@@ -449,10 +489,14 @@ class Ui_CircularWindow(object):
                         QMessageBox.critical(CircularWindow, "Error", "The period value is not valid")
                         return 0
                         pass
-                    [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
-                    ui_circ.lineEdit.setText('%.6f' % altitude)
-                    ui_circ.lineEdit_2.setText('%.6f' % raio)
-                    ui_circ.lineEdit_4.setText('%.6f' % velocidade)
+                    if ui_circ.comboBox.currentIndex() == 1:
+                        p1 *= 3600
+                    elif ui_circ.comboBox.currentIndex() == 2:
+                        p1 *= (3600 * 24)
+                    [self.altitude, self.raio, self.periodo, self.velocidade] = orbita_circular(planeta, id, p1)
+                    ui_circ.lineEdit.setText('%.6f' % self.altitude)
+                    ui_circ.lineEdit_2.setText('%.6f' % self.raio)
+                    ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
                 else:
                     p1 = ui_circ.lineEdit_4.text().replace(',', '.')
                     if p1:
@@ -463,12 +507,45 @@ class Ui_CircularWindow(object):
                             QMessageBox.critical(CircularWindow, "Error", "The velocity value is not valid")
                             return 0
                             pass
-                        [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
-                        ui_circ.lineEdit.setText('%.6f' % altitude)
-                        ui_circ.lineEdit_2.setText('%.6f' % raio)
-                        ui_circ.lineEdit_3.setText('%.6f' % periodo)
+                        [self.altitude, self.raio, self.periodo, self.velocidade] = orbita_circular(planeta, id, p1)
+                        ui_circ.lineEdit.setText('%.6f' % self.altitude)
+                        ui_circ.lineEdit_2.setText('%.6f' % self.raio)
+                        aux = self.periodo  # (Seconds)
+                        if self.comboBox.currentIndex() == 0:  # s
+                            ui_circ.lineEdit_3.setText('%.6f' % aux)
+                        elif self.comboBox.currentIndex() == 1:  # h
+                            aux /= 3600
+                            hours = int(aux)
+                            aux -= hours
+                            aux *= 60
+                            minutes = int(aux)
+                            aux -= minutes
+                            secunds = aux * 60
+                            ui_circ.lineEdit_3.setText('%dh %dm %.2fs' % (hours, minutes, secunds))
+                        else:  # days
+                            aux /= (3600 * 24)
+                            ui_circ.lineEdit_3.setText('%.6f' % aux)
                     else:
                         QMessageBox.information(CircularWindow , "Error", "No input elements found")
+
+    def on_combobox_changed(self):
+        if  self.periodo:
+            aux = self.periodo #(Seconds)
+            if self.comboBox.currentIndex() == 0:  # s
+                ui_circ.lineEdit_3.setText('%.6f' % aux)
+            elif self.comboBox.currentIndex() == 1:  # h
+                aux /= 3600
+                hours = int(aux)
+                aux -= hours
+                aux *= 60
+                minutes = int(aux)
+                aux -= minutes
+                secunds = aux * 60
+                ui_circ.lineEdit_3.setText('%dh %dm %.2fs' % (hours,  minutes, secunds))
+            else:  # days
+                aux /= (3600*24)
+                ui_circ.lineEdit_3.setText('%.6f' % aux)
+
 
 
 
