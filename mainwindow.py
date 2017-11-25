@@ -7,6 +7,11 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QLabel
+from PyQt5.QtGui import QIcon, QPixmap
+from functions import *
+from functools import partial
+from math import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -49,6 +54,7 @@ class Ui_MainWindow(object):
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
+        self.comboBox.currentIndexChanged.connect(self.on_combobox_changed, self.comboBox.currentIndex())
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_2.setGeometry(QtCore.QRect(390, 150, 361, 211))
         font = QtGui.QFont()
@@ -95,6 +101,13 @@ class Ui_MainWindow(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
         self.label.setObjectName("label")
+        # ------------------------------------ IMAGEM --------------------------
+        self.label100 = QtWidgets.QLabel(self.centralwidget)
+        self.label100.setGeometry(QtCore.QRect(150, 250, 321, 261))
+        self.label100.setObjectName('label_100')
+        self.pixmap100 = QPixmap('Earth-small.png')
+        self.label100.setPixmap(self.pixmap100)
+
         self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_3.setGeometry(QtCore.QRect(790, 150, 311, 261))
         font = QtGui.QFont()
@@ -170,3 +183,41 @@ class Ui_MainWindow(object):
         self.pushButton_8.setText(_translate("MainWindow", "Propellant Mass"))
         self.pushButton_9.setText(_translate("MainWindow", "Plane Changes"))
 
+    def on_combobox_changed(self):
+        value = self.comboBox.currentIndex()
+        self.label100.setGeometry(QtCore.QRect(150, 250, 321, 261))
+        if value == 0:
+            self.pixmap100 = QPixmap('Earth-small.png')
+        elif value == 1:
+            self.pixmap100 = QPixmap('Moon-small.png')
+        elif value == 2:
+            self.pixmap100 = QPixmap('Sun-small.png')
+        elif value == 3:
+            self.pixmap100 = QPixmap('Mercury-small.png')
+        elif value == 4:
+            self.pixmap100 = QPixmap('Venus-small.png')
+        elif value == 5:
+            self.pixmap100 = QPixmap('Mars-small.png')
+        elif value == 6:
+            self.pixmap100 = QPixmap('Jupiter-small.png')
+        elif value == 7:
+            self.pixmap100 = QPixmap('Saturn-small.png')
+            self.label100.setGeometry(QtCore.QRect(62, 250, 321, 261))
+        elif value == 8:
+            self.pixmap100 = QPixmap('Uranus-small.png')
+        elif value == 9:
+            self.pixmap100 = QPixmap('Neptune-small.png')
+        elif value == 10:
+            self.pixmap100 = QPixmap('Pluto-small.png')
+        elif value == 11:
+            self.pixmap100 = QPixmap('MDS-logo-small.png')
+        self.label100.setPixmap(self.pixmap100)
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
