@@ -34,17 +34,17 @@ def orbita_circular (planeta,id,p1):
 
 # - Orbitas elípticas --------------------------------------------------------------------------------------------------
 #
-# 0-h.perigeu 1-r.perigeu 2-excentricidade 3-semi.eixo.maior 4-periodo 5-h.apgeu 6-r.apogeu 7-v.perogeu 8-v.apogeu
+# 0-h.perigeu 1-r.perigeu 2-excentricidade 3-semi.eixo.maior 4-periodo 5-h.apgeu 6-r.apogeu 7-v.perigeu 8-v.apogeu
 #
 # Unidades SI [Km em vez de m]
 #
-# -> parametros de entrada: (planeta, id do parametro inserido 1, id parametro2, valor do parametro com id 1, valor do
+# -> parametros de entrada: (planeta, id do parametro inserido 1, valor do parametro com id 1, id parametro2, valor do
 # parametro com id 2)
 # -> parâmetros de saída: (ans[0,1,2,3,4,5,6,7])
 #-----------------------------------------------------------------------------------------------------------------------
-def orbita_eliptica (planeta,id1,id2,p1,p2):
+def orbita_eliptica (planeta,id1,p1,id2,p2):
     planet = Planetas(planeta)
-    res = [None]*8
+    res = [0,0,0,0,0,0,0,0,0]
     if (id1 == 0 and id2 == 1) or (id1 == 3 and id2 == 4) or  (id1 == 5 and id2 == 6):
         print('Erro: Inseridos dois valores dependentes')
     else:
@@ -94,9 +94,34 @@ def orbita_eliptica (planeta,id1,id2,p1,p2):
                     res[3] = (res[1] + res[6])/2
             else: # a ra
                 res[1] = 2 * res[3] - res[6]
-                res[3] = res[6]/res[3] - 1
+                res[2] = res[6]/res[3] - 1
+
+        if res[0] == 0:
+            res[0] = res[1] - planet.radius
+        if res[5] == 0:
+            res[5] = res[6] - planet.radius
+        if res[4] == 0:
+            res[4] = (2 * math.pi)/ math.sqrt(planet.u) * res[3] ** (3/2)
+
+        res[7] = math.sqrt(2 * planet.u * (1/res[1] - 1/(2 * res[3])))
+        res[8] = math.sqrt(2 * planet.u * (1 / res[6] - 1 / (2 * res[3])))
+
     return res
 
+
+# - Tipo de Orbita Desconhecido ----------------------------------------------------------------------------------------
+#
+# Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (astrocentral, r0, v0, gama0)
+#
+# -> parâmetros de saída: ([a, e])
+#-----------------------------------------------------------------------------------------------------------------------
+def orbita_desconhecida (planeta,r0,v0,gama0):
+    planet = Planetas(planeta)
+    a = r0 / (2 - (r0 * v0 ** 2)/planet.u)
+    e = math.sqrt(((r0 * v0 ** 2)/planet.u -1) ** 2 * (math.cos(gama0) ** 2 + (math.sin(gama0)) ** 2))
+    return [a,e]
 
 
 # - Parametros Planetas-------------------------------------------------------------------------------------------------
@@ -119,7 +144,9 @@ class Planetas:
 
 
 
-print(orbita_circular(0,0,200))
-print(orbita_circular(0,1,6578.14))
-print(orbita_circular(0,2,5309.647275945052))
-print(orbita_circular(0,3,7.784259565380226))
+print(orbita_circular(0,2,5400))
+print(['%.10f' % elem for elem in orbita_eliptica(0,0,593,5,39770)])
+print(orbita_desconhecida(0,6652.555468783185, 7.740599773454766, 0))
+print(orbita_desconhecida(0,46148.14, 1.5056796288, 0))
+
+
