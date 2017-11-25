@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'main.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# MISSION PLANNER
 #
-# WARNING! All changes made in this file will be lost!
+# This is a software that helps user to determine orbits and oyher orbital mechanics parameters
+#
+# Programmed by Mario Gabriel Campos
+#
+# Interface created by: PyQt5 UI code generator 5.6 (pyuic5)
+#
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QLabel
@@ -12,6 +14,7 @@ from PyQt5.QtGui import QIcon, QPixmap
 from functions import *
 from functools import partial
 from math import *
+import sys
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -73,6 +76,7 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.pushButton.setFont(font)
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.bt_circulares_clicked)
         self.pushButton_3 = QtWidgets.QPushButton(self.groupBox_2)
         self.pushButton_3.setGeometry(QtCore.QRect(190, 110, 121, 31))
         font = QtGui.QFont()
@@ -213,11 +217,270 @@ class Ui_MainWindow(object):
             self.pixmap100 = QPixmap('MDS-logo-small.png')
         self.label100.setPixmap(self.pixmap100)
 
+    def bt_circulares_clicked(self):
+        CircularWindow.show()
+
+class Ui_CircularWindow(object):
+    def setupUi(self, CircularWindow):
+        CircularWindow.setObjectName("CircularWindow")
+        CircularWindow.resize(1172, 534)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("MDS-logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        CircularWindow.setWindowIcon(icon)
+        self.centralwidget = QtWidgets.QWidget(CircularWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox.setGeometry(QtCore.QRect(80, 90, 371, 241))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.groupBox.setFont(font)
+        self.groupBox.setObjectName("groupBox")
+        self.label = QtWidgets.QLabel(self.groupBox)
+        self.label.setGeometry(QtCore.QRect(30, 50, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self.groupBox)
+        self.label_2.setGeometry(QtCore.QRect(30, 90, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(self.groupBox)
+        self.label_3.setGeometry(QtCore.QRect(30, 130, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_3.setFont(font)
+        self.label_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self.groupBox)
+        self.label_4.setGeometry(QtCore.QRect(30, 170, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_4.setFont(font)
+        self.label_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self.groupBox)
+        self.label_5.setGeometry(QtCore.QRect(250, 50, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit.setGeometry(QtCore.QRect(110, 50, 131, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit.setFont(font)
+        self.lineEdit.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_2.setGeometry(QtCore.QRect(110, 90, 131, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_2.setFont(font)
+        self.lineEdit_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_3.setGeometry(QtCore.QRect(110, 130, 131, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_3.setFont(font)
+        self.lineEdit_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_4.setGeometry(QtCore.QRect(110, 170, 131, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_4.setFont(font)
+        self.lineEdit_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.label_6 = QtWidgets.QLabel(self.groupBox)
+        self.label_6.setGeometry(QtCore.QRect(250, 90, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_6.setFont(font)
+        self.label_6.setObjectName("label_6")
+        self.label_8 = QtWidgets.QLabel(self.groupBox)
+        self.label_8.setGeometry(QtCore.QRect(250, 170, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+        self.comboBox = QtWidgets.QComboBox(self.groupBox)
+        self.comboBox.setGeometry(QtCore.QRect(250, 130, 73, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.comboBox.setFont(font)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.label_7 = QtWidgets.QLabel(self.groupBox)
+        self.label_7.setGeometry(QtCore.QRect(40, 210, 271, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_7.setFont(font)
+        self.label_7.setObjectName("label_7")
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(280, 410, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.bt_calculate)
+        self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_5.setGeometry(QtCore.QRect(70, 410, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_5.setFont(font)
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.pushButton_5.clicked.connect(self.bt_exit)
+        self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
+        self.graphicsView.setGeometry(QtCore.QRect(600, 40, 491, 401))
+        self.graphicsView.setObjectName("graphicsView")
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(20, 30, 551, 21))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setUnderline(True)
+        self.label_9.setFont(font)
+        self.label_9.setObjectName("label_9")
+        self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_6.setGeometry(QtCore.QRect(350, 370, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_6.setFont(font)
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_7.setGeometry(QtCore.QRect(70, 370, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_7.setFont(font)
+        self.pushButton_7.setObjectName("pushButton_7")
+        self.pushButton_7.clicked.connect(self.bt_clear)
+        self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_8.setGeometry(QtCore.QRect(210, 370, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_8.setFont(font)
+        self.pushButton_8.setObjectName("pushButton_8")
+        CircularWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(CircularWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1172, 26))
+        self.menubar.setObjectName("menubar")
+        CircularWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(CircularWindow)
+        self.statusbar.setObjectName("statusbar")
+        CircularWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(CircularWindow)
+        QtCore.QMetaObject.connectSlotsByName(CircularWindow)
+
+    def retranslateUi(self, CircularWindow):
+        _translate = QtCore.QCoreApplication.translate
+        CircularWindow.setWindowTitle(_translate("CircularWindow", "Circular Orbit"))
+        self.groupBox.setTitle(_translate("CircularWindow", "Input any Element"))
+        self.label.setText(_translate("CircularWindow", "Altitude:"))
+        self.label_2.setText(_translate("CircularWindow", "Radius:"))
+        self.label_3.setText(_translate("CircularWindow", "Period:"))
+        self.label_4.setText(_translate("CircularWindow", "Velocity:"))
+        self.label_5.setText(_translate("CircularWindow", "[Km]"))
+        self.label_6.setText(_translate("CircularWindow", "[Km]"))
+        self.label_8.setText(_translate("CircularWindow", "[Km/s]"))
+        self.comboBox.setItemText(0, _translate("CircularWindow", "[s]"))
+        self.comboBox.setItemText(1, _translate("CircularWindow", "[h]"))
+        self.comboBox.setItemText(2, _translate("CircularWindow", "[days]"))
+        self.label_7.setText(_translate("CircularWindow", "Given element is underlined"))
+        self.pushButton_3.setText(_translate("CircularWindow", "Calculate"))
+        self.pushButton_5.setText(_translate("CircularWindow", "Exit"))
+        self.label_9.setText(_translate("CircularWindow", "Circular Earth Orbit"))
+        self.pushButton_6.setText(_translate("CircularWindow", "Export Data"))
+        self.pushButton_7.setText(_translate("CircularWindow", "Clear"))
+        self.pushButton_8.setText(_translate("CircularWindow", "Graph Settings"))
+
+    def bt_clear(self):
+        self.lineEdit.clear()
+        self.lineEdit_2.clear()
+        self.lineEdit_3.clear()
+        self.lineEdit_4.clear()
+
+    def bt_exit(self):
+        CircularWindow.close()
+
+    def bt_calculate(self):
+        p1 = ui_circ.lineEdit.text().replace(',', '.')
+        planeta = ui.comboBox.currentIndex()
+        if p1:
+            id = 0
+            try:
+                p1 = float(p1)
+            except Exception:
+                QMessageBox.critical(CircularWindow, "Error", "The altitude value is not valid")
+                return 0
+                pass
+            [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
+            ui_circ.lineEdit_2.setText('%.6f' % raio)
+            ui_circ.lineEdit_3.setText('%.6f' % periodo)
+            ui_circ.lineEdit_4.setText('%.6f' % velocidade)
+        else:
+            p1 = ui_circ.lineEdit_2.text().replace(',', '.')
+            if p1:
+                id = 1
+                try:
+                    p1 = float(p1)
+                except Exception:
+                    QMessageBox.critical(CircularWindow, "Error", "The radius value is not valid")
+                    return 0
+                    pass
+                [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
+                ui_circ.lineEdit.setText('%.6f' % altitude)
+                ui_circ.lineEdit_3.setText('%.6f' % periodo)
+                ui_circ.lineEdit_4.setText('%.6f' % velocidade)
+            else:
+                p1 = ui_circ.lineEdit_3.text().replace(',', '.')
+                if p1:
+                    id = 2
+                    try:
+                        p1 = float(p1)
+                    except Exception:
+                        QMessageBox.critical(CircularWindow, "Error", "The period value is not valid")
+                        return 0
+                        pass
+                    [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
+                    ui_circ.lineEdit.setText('%.6f' % altitude)
+                    ui_circ.lineEdit_2.setText('%.6f' % raio)
+                    ui_circ.lineEdit_4.setText('%.6f' % velocidade)
+                else:
+                    p1 = ui_circ.lineEdit_4.text().replace(',', '.')
+                    if p1:
+                        id = 3
+                        try:
+                            p1 = float(p1)
+                        except Exception:
+                            QMessageBox.critical(CircularWindow, "Error", "The velocity value is not valid")
+                            return 0
+                            pass
+                        [altitude, raio, periodo, velocidade] = orbita_circular(planeta, id, p1)
+                        ui_circ.lineEdit.setText('%.6f' % altitude)
+                        ui_circ.lineEdit_2.setText('%.6f' % raio)
+                        ui_circ.lineEdit_3.setText('%.6f' % periodo)
+                    else:
+                        QMessageBox.information(CircularWindow , "Error", "No input elements found")
+
+
+
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+
+    CircularWindow = QtWidgets.QMainWindow()
+    ui_circ = Ui_CircularWindow()
+    ui_circ.setupUi(CircularWindow)
+
     MainWindow.show()
     sys.exit(app.exec_())
