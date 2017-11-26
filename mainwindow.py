@@ -15,6 +15,9 @@ from functions import *
 from functools import partial
 from math import *
 import sys
+import numpy as np
+from pyqtgraph.Qt import QtGui, QtCore
+import pyqtgraph as pg
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -227,6 +230,7 @@ class Ui_CircularWindow(object):
         self.altitude = 0
         self.raio = 0
         self.velocidade = 0
+        self.exists_graph = 0
 
     def setupUi(self, CircularWindow):
         CircularWindow.setObjectName("CircularWindow")
@@ -383,6 +387,10 @@ class Ui_CircularWindow(object):
         self.statusbar = QtWidgets.QStatusBar(CircularWindow)
         self.statusbar.setObjectName("statusbar")
         CircularWindow.setStatusBar(self.statusbar)
+        #------------Gráfico-------------------------------------------
+        self.cw = pg.GraphicsLayoutWidget(self.centralwidget)
+        self.cw.setObjectName("graph")
+        self.cw.setGeometry(QtCore.QRect(550, 40, 575, 450))
 
         self.retranslateUi(CircularWindow)
         QtCore.QMetaObject.connectSlotsByName(CircularWindow)
@@ -418,9 +426,43 @@ class Ui_CircularWindow(object):
         self.raio = 0
         self.velocidade = 0
         self.altitude = 0
+        if self.exists_graph:
+            self.p2 = self.cw.removeItem(self.p2)
+            self.exists_graph = 0
 
     def bt_exit(self):
         CircularWindow.close()
+
+    def make_graph(self, radius, plamet_radius):
+        if self.exists_graph:
+            self.p2 = self.cw.removeItem(self.p2)
+
+        self.p2 = self.cw.addPlot()
+        a = radius
+        b = radius
+        limit = 1.1 * a
+        x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
+        y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
+
+        rp = plamet_radius
+        e = np.sqrt(1 - (b / a) ** 2)
+
+        xp = rp * np.sin(np.linspace(0, 2 * np.pi, 1000)) + a * e
+        yp = rp * np.cos(np.linspace(0, 2 * np.pi, 1000))
+
+        self.c = self.p2.plot(x, y)
+        self.d = self.p2.plot(xp, yp)
+        self.a = pg.CurveArrow(self.c)
+        # b = pg.CurveArrow(d)
+        self.a.setStyle(headLen=40)
+        self.p2.addItem(self.a)
+        self.p2.addItem(self.d)
+        self.p2.setXRange(-limit, limit)
+        self.p2.setYRange(-limit, limit)
+        self.p2.setAspectLocked(lock=True, ratio=1)
+        self.anim = self.a.makeAnimation(loop=-1)
+        self.anim.start()
+        self.exists_graph = 1
 
     def bt_calculate(self):
         p1 = ui_circ.lineEdit.text().replace(',', '.')
@@ -451,6 +493,8 @@ class Ui_CircularWindow(object):
             else:  # days
                 aux /= (3600*24)
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
+            planet = Planetas(planeta)
+            self.make_graph(self.raio, planet.radius)
         else:
             p1 = ui_circ.lineEdit_2.text().replace(',', '.')
             if p1:
@@ -479,6 +523,8 @@ class Ui_CircularWindow(object):
                 else:  # days
                     aux /= (3600 * 24)
                     ui_circ.lineEdit_3.setText('%.6f' % aux)
+                planet = Planetas(planeta)
+                self.make_graph(self.raio, planet.radius)
             else:
                 p1 = ui_circ.lineEdit_3.text().replace(',', '.')
                 if p1:
@@ -497,6 +543,8 @@ class Ui_CircularWindow(object):
                     ui_circ.lineEdit.setText('%.6f' % self.altitude)
                     ui_circ.lineEdit_2.setText('%.6f' % self.raio)
                     ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
+                    planet = Planetas(planeta)
+                    self.make_graph(self.raio, planet.radius)
                 else:
                     p1 = ui_circ.lineEdit_4.text().replace(',', '.')
                     if p1:
@@ -525,6 +573,8 @@ class Ui_CircularWindow(object):
                         else:  # days
                             aux /= (3600 * 24)
                             ui_circ.lineEdit_3.setText('%.6f' % aux)
+                        planet = Planetas(planeta)
+                        self.make_graph(self.raio, planet.radius)
                     else:
                         QMessageBox.information(CircularWindow , "Error", "No input elements found")
 
