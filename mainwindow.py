@@ -463,6 +463,10 @@ class Ui_CircularWindow(object):
         self.anim = self.a.makeAnimation(loop=-1)
         self.anim.start()
         self.exists_graph = 1
+        #pic = QtGui.QLabel(self)
+        #pic.setPixmap(QtGui.QPixmap("Pluto-small.png"))
+
+        #pic.show()
 
     def bt_calculate(self):
         p1 = ui_circ.lineEdit.text().replace(',', '.')
