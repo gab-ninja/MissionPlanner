@@ -686,6 +686,7 @@ class Ui_TypeUnknown(object):
         font.setPointSize(10)
         self.pushButton_3.setFont(font)
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.bt_determine_orbit)
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_5.setGeometry(QtCore.QRect(60, 260, 191, 31))
         font = QtGui.QFont()
@@ -721,6 +722,62 @@ class Ui_TypeUnknown(object):
     def bt_exit(self):
         TypeUnknown.close()
 
+    def bt_determine_orbit(self):
+        planeta = ui.comboBox.currentIndex()
+
+        gama = ui_type_unknown.lineEdit.text().replace(',', '.')
+        try:
+            gama = float(gama)
+        except Exception:
+            QMessageBox.critical(CircularWindow, "Error", "The flight path angle value is not valid")
+            return 0
+            pass
+
+        r = ui_type_unknown.lineEdit_2.text().replace(',', '.')
+        try:
+            r = float(r)
+        except Exception:
+            QMessageBox.critical(CircularWindow, "Error", "The radius value is not valid")
+            return 0
+            pass
+
+        v = ui_type_unknown.lineEdit_4.text().replace(',', '.')
+        try:
+            v = float(v)
+        except Exception:
+            QMessageBox.critical(CircularWindow, "Error", "The velocity value is not valid")
+            return 0
+            pass
+
+
+        [a, e] = orbita_desconhecida(planeta, r, v, gama)
+
+        msgbox = QMessageBox()
+        msgbox.setText("Which orbit do you want to proceed ?")
+        msgbox.setInformativeText("e = %.8f" % e)
+        msgbox.setWindowTitle("Type Unknown")
+
+        bt_clicked = 0
+
+        if e < 0.001:
+            msgbox.addButton('Circular Orbit', QMessageBox.YesRole)
+            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
+        elif e < 0.999:
+            bt_clicked += 1
+            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
+        elif e < 1.001:
+            bt_clicked += 1
+            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
+            msgbox.addButton('Parabiloc Orbit', QMessageBox.RejectRole)
+            msgbox.addButton('Hyperbolic Orbit', QMessageBox.AcceptRole)
+        else:
+            bt_clicked += 3
+            msgbox.addButton('Hyperbolic Orbit', QMessageBox.AcceptRole)
+
+        ret = msgbox.exec_()
+        orbit = ret + bt_clicked #0-circ 1-elip 2-para 3-hyper
+        TypeUnknown.close()
+
 
 
 if __name__ == "__main__":
@@ -739,3 +796,9 @@ if __name__ == "__main__":
 
     MainWindow.show()
     sys.exit(app.exec_())
+
+# Adicionar:
+#   - bloquear tamanho das janelas
+#
+#
+#
