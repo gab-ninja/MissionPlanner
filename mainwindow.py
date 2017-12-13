@@ -98,6 +98,7 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.pushButton_5.setFont(font)
         self.pushButton_5.setObjectName("pushButton_5")
+        self.pushButton_5.clicked.connect(self.bt_type_unknown_clicked)
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(10, 30, 1091, 51))
         font = QtGui.QFont()
@@ -222,6 +223,9 @@ class Ui_MainWindow(object):
 
     def bt_circulares_clicked(self):
         CircularWindow.show()
+
+    def bt_type_unknown_clicked(self):
+        TypeUnknown.show()
 
 class Ui_CircularWindow(object):
     def __init__(self):
@@ -601,6 +605,179 @@ class Ui_CircularWindow(object):
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
 
 
+class Ui_TypeUnknown(object):
+    def setupUi(self, TypeUnknown):
+        TypeUnknown.setObjectName("TypeUnknown")
+        TypeUnknown.resize(522, 348)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("MDS-logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        TypeUnknown.setWindowIcon(icon)
+        self.centralwidget = QtWidgets.QWidget(TypeUnknown)
+        self.centralwidget.setObjectName("centralwidget")
+        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox.setGeometry(QtCore.QRect(40, 40, 441, 181))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.groupBox.setFont(font)
+        self.groupBox.setObjectName("groupBox")
+        self.label = QtWidgets.QLabel(self.groupBox)
+        self.label.setGeometry(QtCore.QRect(30, 50, 131, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self.groupBox)
+        self.label_2.setGeometry(QtCore.QRect(90, 90, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_2.setObjectName("label_2")
+        self.label_4 = QtWidgets.QLabel(self.groupBox)
+        self.label_4.setGeometry(QtCore.QRect(90, 130, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_4.setFont(font)
+        self.label_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self.groupBox)
+        self.label_5.setGeometry(QtCore.QRect(310, 50, 81, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit.setGeometry(QtCore.QRect(170, 50, 131, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit.setFont(font)
+        self.lineEdit.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_2.setGeometry(QtCore.QRect(170, 90, 131, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_2.setFont(font)
+        self.lineEdit_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_4.setGeometry(QtCore.QRect(170, 130, 131, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_4.setFont(font)
+        self.lineEdit_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.label_6 = QtWidgets.QLabel(self.groupBox)
+        self.label_6.setGeometry(QtCore.QRect(310, 90, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_6.setFont(font)
+        self.label_6.setObjectName("label_6")
+        self.label_8 = QtWidgets.QLabel(self.groupBox)
+        self.label_8.setGeometry(QtCore.QRect(310, 130, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(270, 260, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.bt_determine_orbit)
+        self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_5.setGeometry(QtCore.QRect(60, 260, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_5.setFont(font)
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.pushButton_5.clicked.connect(self.bt_exit)
+        TypeUnknown.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(TypeUnknown)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 522, 26))
+        self.menubar.setObjectName("menubar")
+        TypeUnknown.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(TypeUnknown)
+        self.statusbar.setObjectName("statusbar")
+        TypeUnknown.setStatusBar(self.statusbar)
+
+        self.retranslateUi(TypeUnknown)
+        QtCore.QMetaObject.connectSlotsByName(TypeUnknown)
+
+    def retranslateUi(self, TypeUnknown):
+        _translate = QtCore.QCoreApplication.translate
+        TypeUnknown.setWindowTitle(_translate("TypeUnknown", "Type Unknown"))
+        self.groupBox.setTitle(_translate("TypeUnknown", "Input parameters at a point"))
+        self.label.setText(_translate("TypeUnknown", "Flight path angle:"))
+        self.label_2.setText(_translate("TypeUnknown", "Radius:"))
+        self.label_4.setText(_translate("TypeUnknown", "Velocity:"))
+        self.label_5.setText(_translate("TypeUnknown", "[degrees]"))
+        self.label_6.setText(_translate("TypeUnknown", "[Km]"))
+        self.label_8.setText(_translate("TypeUnknown", "[Km/s]"))
+        self.pushButton_3.setText(_translate("TypeUnknown", "Determine Orbit"))
+        self.pushButton_5.setText(_translate("TypeUnknown", "Exit"))
+
+    def bt_exit(self):
+        TypeUnknown.close()
+
+    def bt_determine_orbit(self):
+        planeta = ui.comboBox.currentIndex()
+
+        gama = ui_type_unknown.lineEdit.text().replace(',', '.')
+        try:
+            gama = float(gama)
+        except Exception:
+            QMessageBox.critical(CircularWindow, "Error", "The flight path angle value is not valid")
+            return 0
+            pass
+
+        r = ui_type_unknown.lineEdit_2.text().replace(',', '.')
+        try:
+            r = float(r)
+        except Exception:
+            QMessageBox.critical(CircularWindow, "Error", "The radius value is not valid")
+            return 0
+            pass
+
+        v = ui_type_unknown.lineEdit_4.text().replace(',', '.')
+        try:
+            v = float(v)
+        except Exception:
+            QMessageBox.critical(CircularWindow, "Error", "The velocity value is not valid")
+            return 0
+            pass
+
+
+        [a, e] = orbita_desconhecida(planeta, r, v, gama)
+
+        msgbox = QMessageBox()
+        msgbox.setText("Which orbit do you want to proceed ?")
+        msgbox.setInformativeText("e = %.8f" % e)
+        msgbox.setWindowTitle("Type Unknown")
+
+        bt_clicked = 0
+
+        if e < 0.001:
+            msgbox.addButton('Circular Orbit', QMessageBox.YesRole)
+            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
+        elif e < 0.999:
+            bt_clicked += 1
+            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
+        elif e < 1.001:
+            bt_clicked += 1
+            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
+            msgbox.addButton('Parabiloc Orbit', QMessageBox.RejectRole)
+            msgbox.addButton('Hyperbolic Orbit', QMessageBox.AcceptRole)
+        else:
+            bt_clicked += 3
+            msgbox.addButton('Hyperbolic Orbit', QMessageBox.AcceptRole)
+
+        ret = msgbox.exec_()
+        orbit = ret + bt_clicked #0-circ 1-elip 2-para 3-hyper
+        TypeUnknown.close()
+
 
 
 if __name__ == "__main__":
@@ -613,5 +790,15 @@ if __name__ == "__main__":
     ui_circ = Ui_CircularWindow()
     ui_circ.setupUi(CircularWindow)
 
+    TypeUnknown = QtWidgets.QMainWindow()
+    ui_type_unknown = Ui_TypeUnknown()
+    ui_type_unknown.setupUi(TypeUnknown)
+
     MainWindow.show()
     sys.exit(app.exec_())
+
+# Adicionar:
+#   - bloquear tamanho das janelas
+#
+#
+#
