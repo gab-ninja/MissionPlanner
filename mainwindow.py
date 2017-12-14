@@ -8,6 +8,7 @@
 # Interface created by: PyQt5 UI code generator 5.6 (pyuic5)
 #
 
+from __future__ import unicode_literals
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QLabel
 from PyQt5.QtGui import QIcon, QPixmap
@@ -18,6 +19,13 @@ import sys
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import matplotlib.cbook as cbook
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -393,8 +401,12 @@ class Ui_CircularWindow(object):
         CircularWindow.setStatusBar(self.statusbar)
         #------------Gráfico-------------------------------------------
         self.cw = pg.GraphicsLayoutWidget(self.centralwidget)
-        self.cw.setObjectName("graph")
+        #self.cw.setObjectName("graph")
         self.cw.setGeometry(QtCore.QRect(550, 40, 575, 450))
+
+        #self.sc = MyStaticMplCanvas(self.centralwidget) #, width=5, height=4, dpi=100
+        #self.sc.setGeometry(QtCore.QRect(550, 40, 575, 450))
+        #self.sc.setObjectName('graph')
 
         self.retranslateUi(CircularWindow)
         QtCore.QMetaObject.connectSlotsByName(CircularWindow)
@@ -779,6 +791,63 @@ class Ui_TypeUnknown(object):
         TypeUnknown.close()
 
 
+class MyMplCanvas(FigureCanvas):
+    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        self.axes.grid(color='black', linestyle=':', linewidth=0.2)
+        self.axes.axis('equal')
+
+        self.compute_initial_figure()
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(parent)
+
+        FigureCanvas.setSizePolicy(self,
+                                   QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+
+        #fig, ax = plt.subplots()
+        #im = ax.imshow(image)
+        #patch = patches.Circle((260, 200), radius=200, transform=ax.transData)
+        #im.set_clip_path(patch)
+
+        #ax.axis('off')
+        #plt.show()
+
+    def compute_initial_figure(self):
+        pass
+
+
+class MyStaticMplCanvas(MyMplCanvas):
+    """Simple canvas with a sine plot."""
+
+    def compute_initial_figure(self):
+        t = np.arange(0.0, 3.0, 0.01)
+        s = np.sin(2 * np.pi * t)
+
+        a = 6378
+        b = 6378
+        limit = 1.1 * a
+        x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
+        y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
+
+        self.axes.plot(x, y)
+
+        image_file = cbook.get_sample_data('grace_hopper.png')
+        image = plt.imread(image_file)
+
+        #fig, ax = plt.subplots()
+        #im = ax.imshow(image)
+
+        #self.axes.plot(fig)
+
+
+
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
@@ -799,6 +868,6 @@ if __name__ == "__main__":
 
 # Adicionar:
 #   - bloquear tamanho das janelas
-#
+#   - nome do planeta nas caixas de dialogo
 #
 #
