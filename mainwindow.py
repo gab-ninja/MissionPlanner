@@ -8,6 +8,7 @@
 # Interface created by: PyQt5 UI code generator 5.6 (pyuic5)
 #
 
+from __future__ import unicode_literals
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QLabel
 from PyQt5.QtGui import QIcon, QPixmap
@@ -18,6 +19,13 @@ import sys
 import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import matplotlib.cbook as cbook
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -392,9 +400,13 @@ class Ui_CircularWindow(object):
         self.statusbar.setObjectName("statusbar")
         CircularWindow.setStatusBar(self.statusbar)
         #------------Gráfico-------------------------------------------
-        self.cw = pg.GraphicsLayoutWidget(self.centralwidget)
-        self.cw.setObjectName("graph")
-        self.cw.setGeometry(QtCore.QRect(550, 40, 575, 450))
+        #self.cw = pg.GraphicsLayoutWidget(self.centralwidget)
+        #self.cw.setObjectName("graph")
+        #self.cw.setGeometry(QtCore.QRect(550, 40, 575, 450))
+
+        self.sc = MyDynamicMplCanvas(self.centralwidget) #, width=5, height=4, dpi=100
+        self.sc.setGeometry(QtCore.QRect(550, 40, 575, 450))
+        self.sc.setObjectName('graph')
 
         self.retranslateUi(CircularWindow)
         QtCore.QMetaObject.connectSlotsByName(CircularWindow)
@@ -438,9 +450,11 @@ class Ui_CircularWindow(object):
         CircularWindow.close()
 
     def make_graph(self, radius, plamet_radius):
+        self.sc.update_figure(radius, radius)
+
+    def make_graph_old(self, radius, plamet_radius):
         if self.exists_graph:
             self.p2 = self.cw.removeItem(self.p2)
-
         self.p2 = self.cw.addPlot()
         a = radius
         b = radius
@@ -471,6 +485,22 @@ class Ui_CircularWindow(object):
         #pic.setPixmap(QtGui.QPixmap("Pluto-small.png"))
 
         #pic.show()
+
+        t = np.arange(0.0, 3.0, 0.01)
+        s = np.sin(2 * np.pi * t)
+
+        a = 4378
+        b = 4378
+        limit = 1.1 * a
+        x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
+        y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
+
+        self.sc.axes.clear()
+
+        self.sc.axes.plot(x, y)
+
+        #self.sc.axes.plot(x, y)
+
 
     def bt_calculate(self):
         p1 = ui_circ.lineEdit.text().replace(',', '.')
@@ -779,6 +809,62 @@ class Ui_TypeUnknown(object):
         TypeUnknown.close()
 
 
+class MyMplCanvas(FigureCanvas):
+    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        self.axes.grid(color='black', linestyle=':', linewidth=0.2)
+        self.axes.axis('equal')
+
+        self.compute_initial_figure()
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(parent)
+
+        FigureCanvas.setSizePolicy(self,
+                                   QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+
+        #fig, ax = plt.subplots()
+        #im = ax.imshow(image)
+        #patch = patches.Circle((260, 200), radius=200, transform=ax.transData)
+        #im.set_clip_path(patch)
+
+        #ax.axis('off')
+        #plt.show()
+
+    def compute_initial_figure(self):
+        pass
+
+class MyDynamicMplCanvas(MyMplCanvas):
+    """A canvas that updates itself every second with a new plot."""
+
+    def __init__(self, *args, **kwargs):
+        MyMplCanvas.__init__(self, *args, **kwargs)
+
+    def compute_initial_figure(self):
+        pass
+
+    def update_figure(self, a, b):
+        # Build a list of 4 random integers between 0 and 10 (both inclusive)
+        t = np.arange(0.0, 3.0, 0.01)
+        s = np.sin(2 * np.pi * t)
+
+        a = a
+        b = b
+        limit = 1.1 * a
+        x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
+        y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
+
+        self.axes.cla()
+        self.axes.plot(x, y)
+        self.axes.grid(color='black', linestyle=':', linewidth=0.2)
+        self.axes.axis('equal')
+        self.draw()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
@@ -799,6 +885,6 @@ if __name__ == "__main__":
 
 # Adicionar:
 #   - bloquear tamanho das janelas
-#
+#   - nome do planeta nas caixas de dialogo
 #
 #
