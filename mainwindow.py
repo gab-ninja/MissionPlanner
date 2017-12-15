@@ -26,6 +26,7 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.cbook as cbook
+import matplotlib.image as mpimg
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -442,9 +443,7 @@ class Ui_CircularWindow(object):
         self.raio = 0
         self.velocidade = 0
         self.altitude = 0
-        if self.exists_graph:
-            self.p2 = self.cw.removeItem(self.p2)
-            self.exists_graph = 0
+        self.sc.clear_figure()
 
     def bt_exit(self):
         CircularWindow.close()
@@ -500,7 +499,6 @@ class Ui_CircularWindow(object):
         self.sc.axes.plot(x, y)
 
         #self.sc.axes.plot(x, y)
-
 
     def bt_calculate(self):
         p1 = ui_circ.lineEdit.text().replace(',', '.')
@@ -810,8 +808,6 @@ class Ui_TypeUnknown(object):
 
 
 class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
-
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
@@ -828,20 +824,10 @@ class MyMplCanvas(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-        #fig, ax = plt.subplots()
-        #im = ax.imshow(image)
-        #patch = patches.Circle((260, 200), radius=200, transform=ax.transData)
-        #im.set_clip_path(patch)
-
-        #ax.axis('off')
-        #plt.show()
-
     def compute_initial_figure(self):
         pass
 
 class MyDynamicMplCanvas(MyMplCanvas):
-    """A canvas that updates itself every second with a new plot."""
-
     def __init__(self, *args, **kwargs):
         MyMplCanvas.__init__(self, *args, **kwargs)
 
@@ -853,6 +839,12 @@ class MyDynamicMplCanvas(MyMplCanvas):
         t = np.arange(0.0, 3.0, 0.01)
         s = np.sin(2 * np.pi * t)
 
+        #image = mpimg.imread("Earth-small.png")
+        image = plt.imread("Earth-big.png")
+        im = self.axes.imshow(image, extent=(-6378,6378,-6378,6378), alpha=1)
+        #patch = patches.Circle((0, 0), radius=6378) #transform=self.axes.transData
+        #im.set_clip_path(patch)
+
         a = a
         b = b
         limit = 1.1 * a
@@ -860,7 +852,14 @@ class MyDynamicMplCanvas(MyMplCanvas):
         y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
 
         self.axes.cla()
+        self.axes.grid(color='black', linestyle=':', linewidth=0.2)
+        self.axes.axis('equal')
+        self.axes.add_image(im)
         self.axes.plot(x, y)
+        self.draw()
+
+    def clear_figure(self):
+        self.axes.cla()
         self.axes.grid(color='black', linestyle=':', linewidth=0.2)
         self.axes.axis('equal')
         self.draw()
@@ -886,5 +885,5 @@ if __name__ == "__main__":
 # Adicionar:
 #   - bloquear tamanho das janelas
 #   - nome do planeta nas caixas de dialogo
-#
+#   - planetas na imagem
 #
