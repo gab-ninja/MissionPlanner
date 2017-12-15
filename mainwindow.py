@@ -10,7 +10,7 @@
 
 from __future__ import unicode_literals
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QLabel
+from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QLabel, QInputDialog, QLineEdit, QFileDialog
 from PyQt5.QtGui import QIcon, QPixmap
 from functions import *
 from functools import partial
@@ -27,6 +27,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.cbook as cbook
 import matplotlib.image as mpimg
+import os.path
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -379,6 +380,7 @@ class Ui_CircularWindow(object):
         font.setPointSize(10)
         self.pushButton_6.setFont(font)
         self.pushButton_6.setObjectName("pushButton_6")
+        self.pushButton_6.clicked.connect(self.bt_export)
         self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_7.setGeometry(QtCore.QRect(70, 370, 121, 31))
         font = QtGui.QFont()
@@ -401,10 +403,6 @@ class Ui_CircularWindow(object):
         self.statusbar.setObjectName("statusbar")
         CircularWindow.setStatusBar(self.statusbar)
         #------------Gráfico-------------------------------------------
-        #self.cw = pg.GraphicsLayoutWidget(self.centralwidget)
-        #self.cw.setObjectName("graph")
-        #self.cw.setGeometry(QtCore.QRect(550, 40, 575, 450))
-
         self.sc = MyDynamicMplCanvas(self.centralwidget) #, width=5, height=4, dpi=100
         self.sc.setGeometry(QtCore.QRect(550, 40, 575, 450))
         self.sc.setObjectName('graph')
@@ -450,55 +448,6 @@ class Ui_CircularWindow(object):
 
     def make_graph(self, radius, plamet_radius, planeta):
         self.sc.update_figure(radius, radius, planeta)
-
-    def make_graph_old(self, radius, plamet_radius):
-        if self.exists_graph:
-            self.p2 = self.cw.removeItem(self.p2)
-        self.p2 = self.cw.addPlot()
-        a = radius
-        b = radius
-        limit = 1.1 * a
-        x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
-        y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
-
-        rp = plamet_radius
-        e = np.sqrt(1 - (b / a) ** 2)
-
-        xp = rp * np.sin(np.linspace(0, 2 * np.pi, 1000)) + a * e
-        yp = rp * np.cos(np.linspace(0, 2 * np.pi, 1000))
-
-        self.c = self.p2.plot(x, y)
-        self.d = self.p2.plot(xp, yp)
-        self.a = pg.CurveArrow(self.c)
-        # b = pg.CurveArrow(d)
-        self.a.setStyle(headLen=40)
-        self.p2.addItem(self.a)
-        self.p2.addItem(self.d)
-        self.p2.setXRange(-limit, limit)
-        self.p2.setYRange(-limit, limit)
-        self.p2.setAspectLocked(lock=True, ratio=1)
-        self.anim = self.a.makeAnimation(loop=-1)
-        self.anim.start()
-        self.exists_graph = 1
-        #pic = QtGui.QLabel(self)
-        #pic.setPixmap(QtGui.QPixmap("Pluto-small.png"))
-
-        #pic.show()
-
-        t = np.arange(0.0, 3.0, 0.01)
-        s = np.sin(2 * np.pi * t)
-
-        a = 4378
-        b = 4378
-        limit = 1.1 * a
-        x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
-        y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
-
-        self.sc.axes.clear()
-
-        self.sc.axes.plot(x, y)
-
-        #self.sc.axes.plot(x, y)
 
     def bt_calculate(self):
         p1 = ui_circ.lineEdit.text().replace(',', '.')
@@ -631,6 +580,10 @@ class Ui_CircularWindow(object):
             else:  # days
                 aux /= (3600*24)
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
+
+    def bt_export(self):
+        ex = SaveFile()
+        ex.saveFileDialog()
 
 
 class Ui_TypeUnknown(object):
@@ -891,6 +844,54 @@ class MyDynamicMplCanvas(MyMplCanvas):
         self.axes.grid(color='black', linestyle=':', linewidth=0.2)
         self.axes.axis('equal')
         self.draw()
+
+
+class SaveFile(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.title = 'PyQt5 file dialogs - pythonspot.com'
+        self.left = 10
+        self.top = 10
+        self.width = 640
+        self.height = 480
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        #self.openFileNameDialog()
+        #self.openFileNamesDialog()
+        #self.saveFileDialog()
+
+        #self.show()
+
+    def openFileNameDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
+                                                  "All Files (*);;Python Files (*.py)", options=options)
+        if fileName:
+            print(fileName)
+
+    def openFileNamesDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        files, _ = QFileDialog.getOpenFileNames(self, "QFileDialog.getOpenFileNames()", "",
+                                                "All Files (*);;Python Files (*.py)", options=options)
+        if files:
+            print(files)
+
+    def saveFileDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "",
+                                                  "Text Files (*.txt)", options=options)
+        if fileName:
+            print(fileName)
+            file = open(fileName, 'w')
+            file.write('Hello, World!')
+            file.close()
 
 
 if __name__ == "__main__":
