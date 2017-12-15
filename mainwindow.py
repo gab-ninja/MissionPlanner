@@ -448,8 +448,8 @@ class Ui_CircularWindow(object):
     def bt_exit(self):
         CircularWindow.close()
 
-    def make_graph(self, radius, plamet_radius):
-        self.sc.update_figure(radius, radius)
+    def make_graph(self, radius, plamet_radius, planeta):
+        self.sc.update_figure(radius, radius, planeta)
 
     def make_graph_old(self, radius, plamet_radius):
         if self.exists_graph:
@@ -530,7 +530,7 @@ class Ui_CircularWindow(object):
                 aux /= (3600*24)
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
             planet = Planetas(planeta)
-            self.make_graph(self.raio, planet.radius)
+            self.make_graph(self.raio, planet.radius, planeta)
         else:
             p1 = ui_circ.lineEdit_2.text().replace(',', '.')
             if p1:
@@ -560,7 +560,7 @@ class Ui_CircularWindow(object):
                     aux /= (3600 * 24)
                     ui_circ.lineEdit_3.setText('%.6f' % aux)
                 planet = Planetas(planeta)
-                self.make_graph(self.raio, planet.radius)
+                self.make_graph(self.raio, planet.radius, planeta)
             else:
                 p1 = ui_circ.lineEdit_3.text().replace(',', '.')
                 if p1:
@@ -580,7 +580,7 @@ class Ui_CircularWindow(object):
                     ui_circ.lineEdit_2.setText('%.6f' % self.raio)
                     ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
                     planet = Planetas(planeta)
-                    self.make_graph(self.raio, planet.radius)
+                    self.make_graph(self.raio, planet.radius, planeta)
                 else:
                     p1 = ui_circ.lineEdit_4.text().replace(',', '.')
                     if p1:
@@ -610,7 +610,7 @@ class Ui_CircularWindow(object):
                             aux /= (3600 * 24)
                             ui_circ.lineEdit_3.setText('%.6f' % aux)
                         planet = Planetas(planeta)
-                        self.make_graph(self.raio, planet.radius)
+                        self.make_graph(self.raio, planet.radius, planeta)
                     else:
                         QMessageBox.information(CircularWindow , "Error", "No input elements found")
 
@@ -834,14 +834,42 @@ class MyDynamicMplCanvas(MyMplCanvas):
     def compute_initial_figure(self):
         pass
 
-    def update_figure(self, a, b):
+    def update_figure(self, a, b, planeta):
         # Build a list of 4 random integers between 0 and 10 (both inclusive)
         t = np.arange(0.0, 3.0, 0.01)
         s = np.sin(2 * np.pi * t)
 
+        planet = Planetas(planeta)
+
         #image = mpimg.imread("Earth-small.png")
-        image = plt.imread("Earth-big.png")
-        im = self.axes.imshow(image, extent=(-6378,6378,-6378,6378), alpha=1)
+        if planeta == 0:
+            image = plt.imread('Earth-small.png')
+        elif planeta == 1:
+            image = plt.imread('Moon-small.png')
+        elif planeta == 2:
+            image = plt.imread('Sun-small.png')
+        elif planeta == 3:
+            image = plt.imread('Mercury-small.png')
+        elif planeta == 4:
+            image = plt.imread('Venus-small.png')
+        elif planeta == 5:
+            image = plt.imread('Mars-small.png')
+        elif planeta == 6:
+            image = plt.imread('Jupiter-small.png')
+        elif planeta == 7:
+            image = plt.imread('Saturn-small.png')
+        elif planeta == 8:
+            image = plt.imread('Uranus-small.png')
+        elif planeta == 9:
+            image = plt.imread('Neptune-small.png')
+        elif planeta == 10:
+            image = plt.imread('Pluto-small.png')
+        elif planeta == 11:
+            image = plt.imread('MDS-logo-small.png')
+
+        #image = plt.imread("Earth-big.png")
+        raio = planet.radius
+        im = self.axes.imshow(image, extent=(-raio,raio,-raio,raio), alpha=1)
         #patch = patches.Circle((0, 0), radius=6378) #transform=self.axes.transData
         #im.set_clip_path(patch)
 
