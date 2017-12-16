@@ -232,6 +232,7 @@ class Ui_MainWindow(object):
         self.label100.setPixmap(self.pixmap100)
 
     def bt_circulares_clicked(self):
+        ui_circ.setupUi(CircularWindow)
         CircularWindow.show()
 
     def bt_type_unknown_clicked(self):
@@ -246,6 +247,7 @@ class Ui_CircularWindow(object):
         self.velocidade = 0
         self.exists_graph = 0
         self.planeta = ui.comboBox.currentIndex()
+        self.planeta_obj = Planetas(self.planeta)
 
     def setupUi(self, CircularWindow):
         CircularWindow.setObjectName("CircularWindow")
@@ -413,6 +415,8 @@ class Ui_CircularWindow(object):
         QtCore.QMetaObject.connectSlotsByName(CircularWindow)
 
     def retranslateUi(self, CircularWindow):
+        self.planeta = ui.comboBox.currentIndex()
+        self.planeta_obj = Planetas(self.planeta)
         _translate = QtCore.QCoreApplication.translate
         CircularWindow.setWindowTitle(_translate("CircularWindow", "Circular Orbit"))
         self.groupBox.setTitle(_translate("CircularWindow", "Input any Element"))
@@ -429,7 +433,8 @@ class Ui_CircularWindow(object):
         self.label_7.setText(_translate("CircularWindow", "Given element is underlined"))
         self.pushButton_3.setText(_translate("CircularWindow", "Calculate"))
         self.pushButton_5.setText(_translate("CircularWindow", "Exit"))
-        self.label_9.setText(_translate("CircularWindow", "Circular Earth Orbit"))
+        self.label_9.setText(_translate("CircularWindow", "Circular " + self.planeta_obj.name + " Orbit"))
+        print(self.planeta_obj.name)
         self.pushButton_6.setText(_translate("CircularWindow", "Export Data"))
         self.pushButton_7.setText(_translate("CircularWindow", "Clear"))
         self.pushButton_8.setText(_translate("CircularWindow", "Graph Settings"))
@@ -448,12 +453,12 @@ class Ui_CircularWindow(object):
     def bt_exit(self):
         CircularWindow.close()
 
-    def make_graph(self, radius, planeta):
-        self.sc.update_figure(radius, radius, planeta)
+    def make_graph(self):
+        self.sc.update_figure(self.raio, self.raio, self.planeta)
 
     def bt_calculate(self):
         p1 = ui_circ.lineEdit.text().replace(',', '.')
-        planeta = ui.comboBox.currentIndex()
+        planeta = self.planeta
         if p1:
             id = 0
             try:
@@ -481,7 +486,7 @@ class Ui_CircularWindow(object):
                 aux /= (3600*24)
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
             planet = Planetas(planeta)
-            self.make_graph(self.raio, planeta)
+            self.make_graph()
         else:
             p1 = ui_circ.lineEdit_2.text().replace(',', '.')
             if p1:
@@ -511,7 +516,7 @@ class Ui_CircularWindow(object):
                     aux /= (3600 * 24)
                     ui_circ.lineEdit_3.setText('%.6f' % aux)
                 planet = Planetas(planeta)
-                self.make_graph(self.raio, planeta)
+                self.make_graph()
             else:
                 p1 = ui_circ.lineEdit_3.text().replace(',', '.')
                 if p1:
@@ -531,7 +536,7 @@ class Ui_CircularWindow(object):
                     ui_circ.lineEdit_2.setText('%.6f' % self.raio)
                     ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
                     planet = Planetas(planeta)
-                    self.make_graph(self.raio, planeta)
+                    self.make_graph()
                 else:
                     p1 = ui_circ.lineEdit_4.text().replace(',', '.')
                     if p1:
@@ -561,7 +566,7 @@ class Ui_CircularWindow(object):
                             aux /= (3600 * 24)
                             ui_circ.lineEdit_3.setText('%.6f' % aux)
                         planet = Planetas(planeta)
-                        self.make_graph(self.raio, planeta)
+                        self.make_graph()
                     else:
                         QMessageBox.information(CircularWindow , "Error", "No input elements found")
 
@@ -585,13 +590,13 @@ class Ui_CircularWindow(object):
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
 
     def bt_export(self):
-        self.planeta = ui.comboBox.currentIndex()
-        planeta = Planetas(self.planeta)
+        #self.planeta = ui.comboBox.currentIndex()
+        #planeta = self.planeta_obj
         print_dic = {
             'orbit_type': 'circular',
-            'planet_name': planeta.name,
-            'planet_radius': planeta.radius,
-            'planet_u': planeta.u,
+            'planet_name': self.planeta_obj.name,
+            'planet_radius': self.planeta_obj.radius,
+            'planet_u': self.planeta_obj.u,
             'orbit_altitude': self.altitude,
             'orbit_radius': self.raio,
             'orbit_period': self.periodo,
@@ -602,7 +607,9 @@ class Ui_CircularWindow(object):
         ex.saveFileDialog(print_dic)
 
     def bt_graph(self):
-        self.sc.save_figure_to_png()
+        #self.sc.save_figure_to_png()
+        ex2 = SaveFile()
+        ex2.saveFigureDialog(self.sc)
 
 
 class Ui_TypeUnknown(object):
@@ -800,8 +807,8 @@ class MyMplCanvas(FigureCanvas):
     def compute_initial_figure(self):
         pass
 
-    def save_figure_to_png(self):
-        self.fig.savefig('nome')
+    def save_figure_to_png(self, url):
+        self.fig.savefig(url, dpi=300)
 
 
 class MyDynamicMplCanvas(MyMplCanvas):
@@ -952,6 +959,14 @@ class SaveFile(QWidget):
             file.write('Software developed by Mario Campos')
             file.close()
 
+    def saveFigureDialog(self, sc):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "",
+                                                  "PNG image (*.png)", options=options)
+        if fileName:
+            url = fileName
+            sc.save_figure_to_png(url)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
