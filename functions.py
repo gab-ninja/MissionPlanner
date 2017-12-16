@@ -124,6 +124,19 @@ def orbita_desconhecida (planeta,r0,v0,gama0):
     return [a,e]
 
 
+# - Mudanças de Plano Orbital ------------------------------------------------------------------------------------------
+#
+# Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (v, plane change angle)
+#
+# -> parâmetros de saída: (lta velocity)
+#-----------------------------------------------------------------------------------------------------------------------
+def plane_changes(v, angle):
+    delta_v = 2 * v * math.sin(angle / 2)
+    return delta_v
+
+
 # - Parametros Planetas-------------------------------------------------------------------------------------------------
 #
 # 0-Earth 1-Moon 2-Sun 3-Mercury 4-Venus 5-Mars 6-Jupiter 7-Saturn 8-Uranus 9-Neptune 10-Pluto 11-Other

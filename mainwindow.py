@@ -32,7 +32,7 @@ import os.path
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1181, 522)
+        MainWindow.setFixedSize(1181, 522)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -248,10 +248,11 @@ class Ui_CircularWindow(object):
         self.exists_graph = 0
         self.planeta = ui.comboBox.currentIndex()
         self.planeta_obj = Planetas(self.planeta)
+        self.given_element = ''
 
     def setupUi(self, CircularWindow):
         CircularWindow.setObjectName("CircularWindow")
-        CircularWindow.resize(1172, 534)
+        CircularWindow.setFixedSize(1172, 534)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("MDS-logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         CircularWindow.setWindowIcon(icon)
@@ -430,7 +431,7 @@ class Ui_CircularWindow(object):
         self.comboBox.setItemText(0, _translate("CircularWindow", "[s]"))
         self.comboBox.setItemText(1, _translate("CircularWindow", "[h]"))
         self.comboBox.setItemText(2, _translate("CircularWindow", "[days]"))
-        self.label_7.setText(_translate("CircularWindow", "Given element is underlined"))
+        self.label_7.setText(_translate("CircularWindow", "Given element:"))
         self.pushButton_3.setText(_translate("CircularWindow", "Calculate"))
         self.pushButton_5.setText(_translate("CircularWindow", "Exit"))
         self.label_9.setText(_translate("CircularWindow", "Circular " + self.planeta_obj.name + " Orbit"))
@@ -449,6 +450,7 @@ class Ui_CircularWindow(object):
         self.velocidade = 0
         self.altitude = 0
         self.sc.clear_figure()
+        self.label_7.setText('Given element: ')
 
     def bt_exit(self):
         CircularWindow.close()
@@ -487,6 +489,8 @@ class Ui_CircularWindow(object):
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
             planet = Planetas(planeta)
             self.make_graph()
+            self.given_element = 'Altitude'
+            self.label_7.setText('Given element: ' + self.given_element)
         else:
             p1 = ui_circ.lineEdit_2.text().replace(',', '.')
             if p1:
@@ -517,6 +521,8 @@ class Ui_CircularWindow(object):
                     ui_circ.lineEdit_3.setText('%.6f' % aux)
                 planet = Planetas(planeta)
                 self.make_graph()
+                self.given_element = 'Radius'
+                self.label_7.setText('Given element: ' + self.given_element)
             else:
                 p1 = ui_circ.lineEdit_3.text().replace(',', '.')
                 if p1:
@@ -537,6 +543,8 @@ class Ui_CircularWindow(object):
                     ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
                     planet = Planetas(planeta)
                     self.make_graph()
+                    self.given_element = 'Period'
+                    self.label_7.setText('Given element: ' + self.given_element)
                 else:
                     p1 = ui_circ.lineEdit_4.text().replace(',', '.')
                     if p1:
@@ -567,13 +575,15 @@ class Ui_CircularWindow(object):
                             ui_circ.lineEdit_3.setText('%.6f' % aux)
                         planet = Planetas(planeta)
                         self.make_graph()
+                        self.given_element = 'Velocity'
+                        self.label_7.setText('Given element: ' + self.given_element)
                     else:
                         QMessageBox.information(CircularWindow , "Error", "No input elements found")
 
     def on_combobox_changed(self):
+        self.periodo_unit = self.comboBox.currentIndex()
         if  self.periodo:
             aux = self.periodo #(Seconds)
-            self.periodo_unit = self.comboBox.currentIndex()
             if self.comboBox.currentIndex() == 0:  # s
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
             elif self.comboBox.currentIndex() == 1:  # h
@@ -601,7 +611,8 @@ class Ui_CircularWindow(object):
             'orbit_radius': self.raio,
             'orbit_period': self.periodo,
             'orbit_period_unit': self.periodo_unit,
-            'orbit_velocity': self.velocidade
+            'orbit_velocity': self.velocidade,
+            'given_element' : self.given_element
         }
         ex = SaveFile()
         ex.saveFileDialog(print_dic)
@@ -615,7 +626,7 @@ class Ui_CircularWindow(object):
 class Ui_TypeUnknown(object):
     def setupUi(self, TypeUnknown):
         TypeUnknown.setObjectName("TypeUnknown")
-        TypeUnknown.resize(522, 348)
+        TypeUnknown.setFixedSize(522, 348)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("MDS-logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         TypeUnknown.setWindowIcon(icon)
@@ -936,11 +947,11 @@ class SaveFile(QWidget):
             if print_dic['orbit_type'] == 'circular':
                 file.write('Type: Circular\n')
                 file.write('Elements:\n')
-                file.write('-> Altitude: ' + str(print_dic['orbit_altitude']) +' [Km]\n')
-                file.write('-> Radius: ' + str(print_dic['orbit_radius']) +' [Km]\n')
+                file.write('  -> Altitude: ' + str(print_dic['orbit_altitude']) +' [Km]\n')
+                file.write('  -> Radius: ' + str(print_dic['orbit_radius']) +' [Km]\n')
                 if print_dic['orbit_period_unit'] == 0:  # s
-                    file.write('-> Period: %.6f [s]\n' % print_dic['orbit_period'])
-                elif print_dic['orbit_period_unit']:  # h
+                    file.write('  -> Period: %.6f [s]\n' % print_dic['orbit_period'])
+                elif print_dic['orbit_period_unit'] == 1:  # h
                     aux = print_dic['orbit_period']
                     aux /= 3600
                     hours = int(aux)
@@ -949,12 +960,13 @@ class SaveFile(QWidget):
                     minutes = int(aux)
                     aux -= minutes
                     secunds = aux * 60
-                    file.write('-> Period: %dh %dm %.2fs \n' % (hours, minutes, secunds))
+                    file.write('  -> Period: %dh %dm %.2fs \n' % (hours, minutes, secunds))
                 else:  # days
                     aux = print_dic['orbit_period']
                     aux /= (3600 * 24)
-                    file.write('-> Period: %.6f [days]\n')
-                file.write('-> Velocity: ' + str(print_dic['orbit_velocity']) +' [Km/s]\n\n\n')
+                    file.write('  -> Period: %.6f [days]\n' % aux)
+                file.write('  -> Velocity: ' + str(print_dic['orbit_velocity']) +' [Km/s]\n\n')
+                file.write('The given element was ' + print_dic['given_element'] + '\n\n\n')
             file.write('____________________________________________________________\n')
             file.write('Software developed by Mario Campos')
             file.close()
@@ -986,7 +998,7 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
 # Adicionar:
-#   - bloquear tamanho das janelas
-#   - nome do planeta nas caixas de dialogo
-#   - planetas na imagem
+#   X bloquear tamanho das janelas
+#   X nome do planeta nas caixas de dialogo
+#   X planetas na imagem
 #
