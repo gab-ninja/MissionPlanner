@@ -245,6 +245,7 @@ class Ui_CircularWindow(object):
         self.raio = 0
         self.velocidade = 0
         self.exists_graph = 0
+        self.planeta = ui.comboBox.currentIndex()
 
     def setupUi(self, CircularWindow):
         CircularWindow.setObjectName("CircularWindow")
@@ -394,6 +395,7 @@ class Ui_CircularWindow(object):
         font.setPointSize(10)
         self.pushButton_8.setFont(font)
         self.pushButton_8.setObjectName("pushButton_8")
+        self.pushButton_8.clicked.connect(self.bt_graph)
         CircularWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(CircularWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1172, 26))
@@ -446,7 +448,7 @@ class Ui_CircularWindow(object):
     def bt_exit(self):
         CircularWindow.close()
 
-    def make_graph(self, radius, plamet_radius, planeta):
+    def make_graph(self, radius, planeta):
         self.sc.update_figure(radius, radius, planeta)
 
     def bt_calculate(self):
@@ -479,7 +481,7 @@ class Ui_CircularWindow(object):
                 aux /= (3600*24)
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
             planet = Planetas(planeta)
-            self.make_graph(self.raio, planet.radius, planeta)
+            self.make_graph(self.raio, planeta)
         else:
             p1 = ui_circ.lineEdit_2.text().replace(',', '.')
             if p1:
@@ -509,7 +511,7 @@ class Ui_CircularWindow(object):
                     aux /= (3600 * 24)
                     ui_circ.lineEdit_3.setText('%.6f' % aux)
                 planet = Planetas(planeta)
-                self.make_graph(self.raio, planet.radius, planeta)
+                self.make_graph(self.raio, planeta)
             else:
                 p1 = ui_circ.lineEdit_3.text().replace(',', '.')
                 if p1:
@@ -529,7 +531,7 @@ class Ui_CircularWindow(object):
                     ui_circ.lineEdit_2.setText('%.6f' % self.raio)
                     ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
                     planet = Planetas(planeta)
-                    self.make_graph(self.raio, planet.radius, planeta)
+                    self.make_graph(self.raio, planeta)
                 else:
                     p1 = ui_circ.lineEdit_4.text().replace(',', '.')
                     if p1:
@@ -559,13 +561,14 @@ class Ui_CircularWindow(object):
                             aux /= (3600 * 24)
                             ui_circ.lineEdit_3.setText('%.6f' % aux)
                         planet = Planetas(planeta)
-                        self.make_graph(self.raio, planet.radius, planeta)
+                        self.make_graph(self.raio, planeta)
                     else:
                         QMessageBox.information(CircularWindow , "Error", "No input elements found")
 
     def on_combobox_changed(self):
         if  self.periodo:
             aux = self.periodo #(Seconds)
+            self.periodo_unit = self.comboBox.currentIndex()
             if self.comboBox.currentIndex() == 0:  # s
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
             elif self.comboBox.currentIndex() == 1:  # h
@@ -582,8 +585,24 @@ class Ui_CircularWindow(object):
                 ui_circ.lineEdit_3.setText('%.6f' % aux)
 
     def bt_export(self):
+        self.planeta = ui.comboBox.currentIndex()
+        planeta = Planetas(self.planeta)
+        print_dic = {
+            'orbit_type': 'circular',
+            'planet_name': planeta.name,
+            'planet_radius': planeta.radius,
+            'planet_u': planeta.u,
+            'orbit_altitude': self.altitude,
+            'orbit_radius': self.raio,
+            'orbit_period': self.periodo,
+            'orbit_period_unit': self.periodo_unit,
+            'orbit_velocity': self.velocidade
+        }
         ex = SaveFile()
-        ex.saveFileDialog()
+        ex.saveFileDialog(print_dic)
+
+    def bt_graph(self):
+        self.sc.save_figure_to_png()
 
 
 class Ui_TypeUnknown(object):
@@ -763,6 +782,7 @@ class Ui_TypeUnknown(object):
 class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
+        self.fig = fig
         self.axes = fig.add_subplot(111)
         self.axes.grid(color='black', linestyle=':', linewidth=0.2)
         self.axes.axis('equal')
@@ -779,6 +799,10 @@ class MyMplCanvas(FigureCanvas):
 
     def compute_initial_figure(self):
         pass
+
+    def save_figure_to_png(self):
+        self.fig.savefig('nome')
+
 
 class MyDynamicMplCanvas(MyMplCanvas):
     def __init__(self, *args, **kwargs):
@@ -882,7 +906,7 @@ class SaveFile(QWidget):
         if files:
             print(files)
 
-    def saveFileDialog(self):
+    def saveFileDialog(self, print_dic):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "",
@@ -898,16 +922,32 @@ class SaveFile(QWidget):
             file.write('#                                                          #\n')
             file.write('############################################################\n\n')
             file.write('===| Central Body |=========================================\n\n')
-            file.write('Name: \n')
-            file.write('Radius: \n')
-            file.write('Gravitational parameter: \n\n')
+            file.write('Name: ' + print_dic['planet_name'] +'\n')
+            file.write('Radius: ' + str(print_dic['planet_radius']) +' [Km]\n')
+            file.write('Gravitational parameter: ' + str(print_dic['planet_u']) +' [Km^3/s^2]\n\n')
             file.write('===| Orbit Data |===========================================\n\n')
-            file.write('Type: Circular\n')
-            file.write('Elements:\n')
-            file.write('-> Altitude: \n')
-            file.write('-> Radius: \n')
-            file.write('-> Period: \n')
-            file.write('-> Velocity: \n\n\n')
+            if print_dic['orbit_type'] == 'circular':
+                file.write('Type: Circular\n')
+                file.write('Elements:\n')
+                file.write('-> Altitude: ' + str(print_dic['orbit_altitude']) +' [Km]\n')
+                file.write('-> Radius: ' + str(print_dic['orbit_radius']) +' [Km]\n')
+                if print_dic['orbit_period_unit'] == 0:  # s
+                    file.write('-> Period: %.6f [s]\n' % print_dic['orbit_period'])
+                elif print_dic['orbit_period_unit']:  # h
+                    aux = print_dic['orbit_period']
+                    aux /= 3600
+                    hours = int(aux)
+                    aux -= hours
+                    aux *= 60
+                    minutes = int(aux)
+                    aux -= minutes
+                    secunds = aux * 60
+                    file.write('-> Period: %dh %dm %.2fs \n' % (hours, minutes, secunds))
+                else:  # days
+                    aux = print_dic['orbit_period']
+                    aux /= (3600 * 24)
+                    file.write('-> Period: %.6f [days]\n')
+                file.write('-> Velocity: ' + str(print_dic['orbit_velocity']) +' [Km/s]\n\n\n')
             file.write('____________________________________________________________\n')
             file.write('Software developed by Mario Campos')
             file.close()
