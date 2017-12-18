@@ -1,6 +1,19 @@
 import math
 
 
+def functions():
+    file = open('planet_data.txt', 'r')
+    read = file.readline().split(';')
+    planet_names =[]
+    planet_radius = []
+    planet_u = []
+    while read[1] != 'end':
+        planet_names.append(read[0])
+        planet_radius.append(float(read[1]))
+        planet_u.append(float(read[2]))
+        read = file.readline().split(';')
+    return planet_radius, planet_names, planet_u
+
 
 # - Orbitas circulares -------------------------------------------------------------------------------------------------
 #
@@ -146,15 +159,18 @@ class Planetas:
 
     def __init__(self, num):
         self.astro = num
-        planet_names = ['Earth', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune',
-                        'Pluto', 'Other']
+        #planet_names = ['Earth', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune',
+        #                'Pluto', 'Other']
+        #self.name = planet_names[self.astro]
+        #planet_radius = [6378.14, 1737.4, 696000, 2439.7, 6051.8, 3397, 71492, 60268, 25559, 24764, 1195, 0]
+        #self.radius = planet_radius[self.astro]
+        #planet_u = [398600.4, 4902.8, 132712439925.5, 22032.1, 324858.8, 42828.3, 126711995.4, 37939519.7, 578158.5,
+        #            6871307.8, 1020.9, 0]
+        #self.u = planet_u[self.astro]
+        planet_radius, planet_names, planet_u = functions()
         self.name = planet_names[self.astro]
-        planet_radius = [6378.14, 1737.4, 696000, 2439.7, 6051.8, 3397, 71492, 60268, 25559, 24764, 1195, 0]
         self.radius = planet_radius[self.astro]
-        planet_u = [398600.4, 4902.8, 132712439925.5, 22032.1, 324858.8, 42828.3, 126711995.4, 37939519.7, 578158.5,
-                    6871307.8, 1020.9, 0]
         self.u = planet_u[self.astro]
-
 
 
 #print(orbita_circular(0,2,5400))

@@ -30,6 +30,9 @@ import matplotlib.image as mpimg
 import os.path
 
 class Ui_MainWindow(object):
+    def __init__(self):
+        self.planet_radius, self.planet_names, self.planet_u = functions()
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(1181, 522)
@@ -58,18 +61,8 @@ class Ui_MainWindow(object):
         self.comboBox.setFont(font)
         self.comboBox.setMaxVisibleItems(12)
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
+        for x in self.planet_radius:
+            self.comboBox.addItem('')
         self.comboBox.currentIndexChanged.connect(self.on_combobox_changed, self.comboBox.currentIndex())
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_2.setGeometry(QtCore.QRect(390, 150, 361, 211))
@@ -174,20 +167,12 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Mission Design Software"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Mission Design Tool"))
         self.groupBox.setTitle(_translate("MainWindow", "Central Body"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Earth"))
-        self.comboBox.setItemText(1, _translate("MainWindow", "Moon"))
-        self.comboBox.setItemText(2, _translate("MainWindow", "Sun"))
-        self.comboBox.setItemText(3, _translate("MainWindow", "Mercury"))
-        self.comboBox.setItemText(4, _translate("MainWindow", "Venus"))
-        self.comboBox.setItemText(5, _translate("MainWindow", "Mars"))
-        self.comboBox.setItemText(6, _translate("MainWindow", "Jupiter"))
-        self.comboBox.setItemText(7, _translate("MainWindow", "Saturn"))
-        self.comboBox.setItemText(8, _translate("MainWindow", "Uranus"))
-        self.comboBox.setItemText(9, _translate("MainWindow", "Neptune"))
-        self.comboBox.setItemText(10, _translate("MainWindow", "Pluto"))
-        self.comboBox.setItemText(11, _translate("MainWindow", "Other"))
+        i = 0
+        for x in self.planet_names:
+            self.comboBox.setItemText(i, _translate("MainWindow", x))
+            i += 1
         self.groupBox_2.setTitle(_translate("MainWindow", "Orbit Definition"))
         self.pushButton_4.setText(_translate("MainWindow", "Hyperbolic"))
         self.pushButton.setText(_translate("MainWindow", "Circular"))
@@ -204,31 +189,16 @@ class Ui_MainWindow(object):
     def on_combobox_changed(self):
         value = self.comboBox.currentIndex()
         self.label100.setGeometry(QtCore.QRect(150, 250, 321, 261))
-        if value == 0:
-            self.pixmap100 = QPixmap('Earth-small.png')
-        elif value == 1:
-            self.pixmap100 = QPixmap('Moon-small.png')
-        elif value == 2:
-            self.pixmap100 = QPixmap('Sun-small.png')
-        elif value == 3:
-            self.pixmap100 = QPixmap('Mercury-small.png')
-        elif value == 4:
-            self.pixmap100 = QPixmap('Venus-small.png')
-        elif value == 5:
-            self.pixmap100 = QPixmap('Mars-small.png')
-        elif value == 6:
-            self.pixmap100 = QPixmap('Jupiter-small.png')
-        elif value == 7:
-            self.pixmap100 = QPixmap('Saturn-small.png')
-            self.label100.setGeometry(QtCore.QRect(62, 250, 321, 261))
-        elif value == 8:
-            self.pixmap100 = QPixmap('Uranus-small.png')
-        elif value == 9:
-            self.pixmap100 = QPixmap('Neptune-small.png')
-        elif value == 10:
+        planets_available = ['Earth', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus',
+                             'Neptune', 'Pluto']
+
+        if self.planet_names[value] in planets_available:
+            self.pixmap100 = QPixmap(self.planet_names[value] + '-small.png')
+            if self.planet_names[value] == 'Saturn':
+                self.label100.setGeometry(QtCore.QRect(62, 250, 321, 261))
+        else:
             self.pixmap100 = QPixmap('Pluto-small.png')
-        elif value == 11:
-            self.pixmap100 = QPixmap('MDS-logo-small.png')
+
         self.label100.setPixmap(self.pixmap100)
 
     def bt_circulares_clicked(self):
@@ -409,7 +379,7 @@ class Ui_CircularWindow(object):
         CircularWindow.setStatusBar(self.statusbar)
         #------------Gráfico-------------------------------------------
         self.sc = MyDynamicMplCanvas(self.centralwidget) #, width=5, height=4, dpi=100
-        self.sc.setGeometry(QtCore.QRect(550, 40, 575, 450))
+        self.sc.setGeometry(QtCore.QRect(600, 10, 500, 500)) #550, 40, 575, 450
         self.sc.setObjectName('graph')
 
         self.retranslateUi(CircularWindow)
@@ -777,17 +747,14 @@ class Ui_TypeUnknown(object):
 
         bt_clicked = 0
 
-        if e < 0.001:
+        if e == 0:
             msgbox.addButton('Circular Orbit', QMessageBox.YesRole)
-            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
-        elif e < 0.999:
+        elif e < 1:
             bt_clicked += 1
             msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
-        elif e < 1.001:
+        elif e == 1:
             bt_clicked += 1
-            msgbox.addButton('Eliptical Orbit', QMessageBox.NoRole)
             msgbox.addButton('Parabiloc Orbit', QMessageBox.RejectRole)
-            msgbox.addButton('Hyperbolic Orbit', QMessageBox.AcceptRole)
         else:
             bt_clicked += 3
             msgbox.addButton('Hyperbolic Orbit', QMessageBox.AcceptRole)
@@ -830,43 +797,22 @@ class MyDynamicMplCanvas(MyMplCanvas):
         pass
 
     def update_figure(self, a, b, planeta):
-        # Build a list of 4 random integers between 0 and 10 (both inclusive)
-        t = np.arange(0.0, 3.0, 0.01)
-        s = np.sin(2 * np.pi * t)
-
         planet = Planetas(planeta)
 
-        #image = mpimg.imread("Earth-small.png")
-        if planeta == 0:
-            image = plt.imread('Earth-small.png')
-        elif planeta == 1:
-            image = plt.imread('Moon-small.png')
-        elif planeta == 2:
-            image = plt.imread('Sun-small.png')
-        elif planeta == 3:
-            image = plt.imread('Mercury-small.png')
-        elif planeta == 4:
-            image = plt.imread('Venus-small.png')
-        elif planeta == 5:
-            image = plt.imread('Mars-small.png')
-        elif planeta == 6:
-            image = plt.imread('Jupiter-small.png')
-        elif planeta == 7:
-            image = plt.imread('Saturn-small.png')
-        elif planeta == 8:
-            image = plt.imread('Uranus-small.png')
-        elif planeta == 9:
-            image = plt.imread('Neptune-small.png')
-        elif planeta == 10:
-            image = plt.imread('Pluto-small.png')
-        elif planeta == 11:
-            image = plt.imread('MDS-logo-small.png')
+        planets_available = ['Earth', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus',
+                             'Neptune', 'Pluto']
 
-        #image = plt.imread("Earth-big.png")
+        if planet.name in planets_available:
+            image = plt.imread(planet.name + '-small.png')
+        else:
+            image = plt.imread('Pluto-small.png')
+
         raio = planet.radius
-        im = self.axes.imshow(image, extent=(-raio,raio,-raio,raio), alpha=1)
-        #patch = patches.Circle((0, 0), radius=6378) #transform=self.axes.transData
-        #im.set_clip_path(patch)
+        if planet.name == 'Saturn':
+            im = self.axes.imshow(image, extent=(-2.14285714 * 1.2 * raio, 2.14285714 * 1.2 * raio, -1.2 * raio,
+                                                 1.2 * raio), alpha=1)
+        else:
+            im = self.axes.imshow(image, extent=(-raio,raio,-raio,raio), alpha=1)
 
         a = a
         b = b
@@ -934,7 +880,7 @@ class SaveFile(QWidget):
             file = open(fileName + '.txt', 'w')
             file.write('############################################################\n')
             file.write('#                                                          #\n')
-            file.write('#               MISSION DESIGN SOFTWARE                    #\n')
+            file.write('#                 MISSION DESIGN TOOL                      #\n')
             file.write('#                                                          #\n')
             file.write('#                Orbit Definition Tool                     #\n')
             file.write('#                                                          #\n')
@@ -968,7 +914,7 @@ class SaveFile(QWidget):
                 file.write('  -> Velocity: ' + str(print_dic['orbit_velocity']) +' [Km/s]\n\n')
                 file.write('The given element was ' + print_dic['given_element'] + '\n\n\n')
             file.write('____________________________________________________________\n')
-            file.write('Software developed by Mario Campos')
+            file.write('')
             file.close()
 
     def saveFigureDialog(self, sc):
@@ -998,7 +944,10 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
 # Adicionar:
-#   X bloquear tamanho das janelas
-#   X nome do planeta nas caixas de dialogo
-#   X planetas na imagem
-#
+#   X Data from txt (horizons NASA)
+#   - About
+#   - grey circle for other planet
+#   - option to add planets from txt
+#   - pre determined planets
+#   - txt output add coment character
+#   - Saturn issue
