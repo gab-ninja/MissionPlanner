@@ -122,6 +122,37 @@ def orbita_eliptica (planeta,id1,p1,id2,p2):
     return res
 
 
+# - Orbitas parabólicas ------------------------------------------------------------------------------------------------
+#
+# 0-p.altitude 1-p.raio 2-semi-latus_rectum 3-p.velocidade   Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (planeta, id do parametro inserido, valor do parametro com determinado id)
+# -> parâmetros de saída: (ans[altitude_perigeu, raio_perigeu, p, velocidade_perigeu])
+#-----------------------------------------------------------------------------------------------------------------------
+def orbita_parabolica (planeta,id,p1):
+    planet = Planetas(planeta)
+    res = [None]*4
+    res[id] = p1
+    if id == 0:
+        res[1] = p1 + planet.radius
+        res[2] = 2 * res[1]
+        res[3] = math.sqrt(2 * planet.u/res[1])
+    elif id == 1:
+        res[0] = res[1] - planet.radius
+        res[2] = 2 * res[1]
+        res[3] = math.sqrt(2 * planet.u / res[1])
+    elif id == 2:
+        res[1] = res[2] / 2
+        res[0] = res[1] - planet.radius
+        res[3] = math.sqrt(2 * planet.u / res[1])
+    elif id == 3:
+        res[1] = 2 * planet.u / (res[3] ** 2)
+        res[0] = res[1] - planet.radius
+        res[2] = 2 * res[1]
+    return res
+
+
+
 # - Tipo de Orbita Desconhecido ----------------------------------------------------------------------------------------
 #
 # Unidades SI [Km em vez de m]

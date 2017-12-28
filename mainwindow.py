@@ -1139,7 +1139,7 @@ class Ui_ElipticalWindow(object):
 class Ui_ParabolicWindow(object):
     def __init__(self):
         self.p = 0  # semi-latus rectum
-        self.altitude = 0
+        self.altitude_perigeu = 0
         self.raio_perigeu = 0
         self.velocidade_perigeu = 0
         self.planeta = ui.comboBox.currentIndex()
@@ -1161,28 +1161,28 @@ class Ui_ParabolicWindow(object):
         self.groupBox.setFont(font)
         self.groupBox.setObjectName("groupBox")
         self.label = QtWidgets.QLabel(self.groupBox)
-        self.label.setGeometry(QtCore.QRect(30, 50, 71, 21))
+        self.label.setGeometry(QtCore.QRect(10, 50, 91, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label.setFont(font)
         self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.groupBox)
-        self.label_2.setGeometry(QtCore.QRect(30, 90, 71, 21))
+        self.label_2.setGeometry(QtCore.QRect(10, 90, 91, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_2.setFont(font)
         self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(self.groupBox)
-        self.label_3.setGeometry(QtCore.QRect(30, 130, 71, 21))
+        self.label_3.setGeometry(QtCore.QRect(10, 130, 91, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_3.setFont(font)
         self.label_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_3.setObjectName("label_3")
         self.label_4 = QtWidgets.QLabel(self.groupBox)
-        self.label_4.setGeometry(QtCore.QRect(30, 170, 71, 21))
+        self.label_4.setGeometry(QtCore.QRect(10, 170, 91, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_4.setFont(font)
@@ -1228,6 +1228,12 @@ class Ui_ParabolicWindow(object):
         font.setPointSize(10)
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
+        self.label_88 = QtWidgets.QLabel(self.groupBox)
+        self.label_88.setGeometry(QtCore.QRect(250, 130, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_88.setFont(font)
+        self.label_88.setObjectName("label_8")
         self.label_8 = QtWidgets.QLabel(self.groupBox)
         self.label_8.setGeometry(QtCore.QRect(250, 170, 61, 21))
         font = QtGui.QFont()
@@ -1307,12 +1313,13 @@ class Ui_ParabolicWindow(object):
         _translate = QtCore.QCoreApplication.translate
         ParabolicWindow.setWindowTitle(_translate("ParabolicWindow", "Parabolic Orbit"))
         self.groupBox.setTitle(_translate("ParabolicWindow", "Input any Element"))
-        self.label.setText(_translate("ParabolicWindow", "Altitude:"))
-        self.label_2.setText(_translate("ParabolicWindow", "Radius:"))
-        self.label_3.setText(_translate("ParabolicWindow", "Period:"))
-        self.label_4.setText(_translate("ParabolicWindow", "Velocity:"))
+        self.label.setText(_translate("ParabolicWindow", "Periapsis altitude:"))
+        self.label_2.setText(_translate("ParabolicWindow", "Periapsis Radius:"))
+        self.label_3.setText(_translate("ParabolicWindow", "Semilatus Rectum:"))
+        self.label_4.setText(_translate("ParabolicWindow", "Periapsis Velocity:"))
         self.label_5.setText(_translate("ParabolicWindow", "[Km]"))
         self.label_6.setText(_translate("ParabolicWindow", "[Km]"))
+        self.label_88.setText(_translate("ParabolicWindow", "[Km]"))
         self.label_8.setText(_translate("ParabolicWindow", "[Km/s]"))
         self.label_7.setText(_translate("ParabolicWindow", "Given element:"))
         self.pushButton_3.setText(_translate("ParabolicWindow", "Calculate"))
@@ -1338,7 +1345,8 @@ class Ui_ParabolicWindow(object):
         ParabolicWindow.close()
 
     def make_graph(self):
-        #self.sc.update_figure(self.raio, self.raio, self.planeta)
+        x_correct = -self.p
+        self.sc.update_figure(self.raio_perigeu, 0, self.planeta, x_correct=x_correct, infinite=1)
         pass
 
     def bt_calculate(self):
@@ -1352,44 +1360,85 @@ class Ui_ParabolicWindow(object):
                 QMessageBox.critical(CircularWindow, "Error", "The altitude value is not valid")
                 return 0
                 pass
-            [self.altitude, self.raio, self.periodo, self.velocidade] = orbita_circular(planeta, id, p1)
-            ui_circ.lineEdit_2.setText('%.6f' % self.raio)
-            ui_circ.lineEdit_4.setText('%.6f' % self.velocidade)
-            aux = self.periodo  # (Seconds)
-            if self.comboBox.currentIndex() == 0:  # s
-                ui_circ.lineEdit_3.setText('%.6f' % aux)
-            elif self.comboBox.currentIndex() == 1:  # h
-                aux /= 3600
-                hours = int(aux)
-                aux -= hours
-                aux *= 60
-                minutes = int(aux)
-                aux -= minutes
-                secunds = aux * 60
-                ui_circ.lineEdit_3.setText('%dh %dm %.2fs' % (hours,  minutes, secunds))
-            else:  # days
-                aux /= (3600*24)
-                ui_circ.lineEdit_3.setText('%.6f' % aux)
-            planet = Planetas(planeta)
+            [self.altitude_perigeu, self.raio_perigeu, self.p, self.velocidade_perigeu] = orbita_parabolica(planeta,
+                                                                                                            id, p1)
+            self.lineEdit_2.setText('%.6f' % self.raio_perigeu)
+            self.lineEdit_4.setText('%.6f' % self.velocidade_perigeu)
+            self.lineEdit_3.setText('%.6f' % self.p)
             self.make_graph()
-            self.given_element = 'Altitude'
+            self.given_element = 'Periapsis altitude'
             self.label_7.setText('Given element: ' + self.given_element)
         else:
-            pass
+            p1 = ui_parab.lineEdit_2.text().replace(',', '.')
+            if p1:
+                id = 1
+                try:
+                    p1 = float(p1)
+                except Exception:
+                    QMessageBox.critical(CircularWindow, "Error", "The radius value is not valid")
+                    return 0
+                    pass
+                [self.altitude_perigeu, self.raio_perigeu, self.p, self.velocidade_perigeu] = orbita_parabolica(planeta,
+                                                                                                                id, p1)
+                self.lineEdit.setText('%.6f' % self.altitude_perigeu)
+                self.lineEdit_4.setText('%.6f' % self.velocidade_perigeu)
+                self.lineEdit_3.setText('%.6f' % self.p)
+                self.make_graph()
+                self.given_element = 'Periapsis radius'
+                self.label_7.setText('Given element: ' + self.given_element)
+            else:
+                p1 = ui_parab.lineEdit_3.text().replace(',', '.')
+                if p1:
+                    id = 2
+                    try:
+                        p1 = float(p1)
+                    except Exception:
+                        QMessageBox.critical(CircularWindow, "Error", "The semilatus rectum value is not valid")
+                        return 0
+                        pass
+                    [self.altitude_perigeu, self.raio_perigeu, self.p, self.velocidade_perigeu] = orbita_parabolica(
+                        planeta,
+                        id, p1)
+                    self.lineEdit.setText('%.6f' % self.altitude_perigeu)
+                    self.lineEdit_4.setText('%.6f' % self.velocidade_perigeu)
+                    self.lineEdit_2.setText('%.6f' % self.raio_perigeu)
+                    self.make_graph()
+                    self.given_element = 'Semilatus rectum'
+                    self.label_7.setText('Given element: ' + self.given_element)
+                else:
+                    p1 = ui_parab.lineEdit_4.text().replace(',', '.')
+                    if p1:
+                        id = 3
+                        try:
+                            p1 = float(p1)
+                        except Exception:
+                            QMessageBox.critical(CircularWindow, "Error", "The velocity value is not valid")
+                            return 0
+                            pass
+                        [self.altitude_perigeu, self.raio_perigeu, self.p, self.velocidade_perigeu] = orbita_parabolica(
+                            planeta,
+                            id, p1)
+                        self.lineEdit.setText('%.6f' % self.altitude_perigeu)
+                        self.lineEdit_3.setText('%.6f' % self.p)
+                        self.lineEdit_2.setText('%.6f' % self.raio_perigeu)
+                        self.make_graph()
+                        self.given_element = 'Periapsis velocity'
+                        self.label_7.setText('Given element: ' + self.given_element)
+                    else:
+                        QMessageBox.information(CircularWindow, "Error", "No input elements found")
 
     def bt_export(self):
         #self.planeta = ui.comboBox.currentIndex()
         #planeta = self.planeta_obj
         print_dic = {
-            'orbit_type': 'circular',
+            'orbit_type': 'parabolic',
             'planet_name': self.planeta_obj.name,
             'planet_radius': self.planeta_obj.radius,
             'planet_u': self.planeta_obj.u,
-            'orbit_altitude': self.altitude,
-            'orbit_radius': self.raio,
-            'orbit_period': self.periodo,
-            'orbit_period_unit': self.periodo_unit,
-            'orbit_velocity': self.velocidade,
+            'orbit_p_altitude': self.altitude_perigeu,
+            'orbit_p_radius': self.raio_perigeu,
+            'orbit_p': self.p,
+            'orbit_p_velocity': self.velocidade_perigeu,
             'given_element' : self.given_element
         }
         ex = SaveFile()
@@ -1401,8 +1450,282 @@ class Ui_ParabolicWindow(object):
         ex2.saveFigureDialog(self.sc)
 
     def recive_data(self, radius):
-        self.raio = radius
-        self.lineEdit_2.setText('%.6f' % self.raio)
+        self.raio_perigeu = radius
+        self.lineEdit_2.setText('%.6f' % self.raio_perigeu)
+
+
+class Ui_HyperbolicWindow(object):
+    def setupUi(self, HyperbolicWindow):
+        HyperbolicWindow.setObjectName("HyperbolicWindow")
+        HyperbolicWindow.resize(1047, 588)
+        self.centralwidget = QtWidgets.QWidget(HyperbolicWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox.setGeometry(QtCore.QRect(60, 80, 401, 451))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.groupBox.setFont(font)
+        self.groupBox.setObjectName("groupBox")
+        self.label = QtWidgets.QLabel(self.groupBox)
+        self.label.setGeometry(QtCore.QRect(20, 50, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label.setObjectName("label")
+        self.label_1 = QtWidgets.QLabel(self.groupBox)
+        self.label_1.setGeometry(QtCore.QRect(30, 90, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_1.setFont(font)
+        self.label_1.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_1.setObjectName("label_1")
+        self.label_4 = QtWidgets.QLabel(self.groupBox)
+        self.label_4.setGeometry(QtCore.QRect(30, 210, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_4.setFont(font)
+        self.label_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self.groupBox)
+        self.label_5.setGeometry(QtCore.QRect(20, 250, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_5.setFont(font)
+        self.label_5.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_5.setObjectName("label_5")
+        self.label_55 = QtWidgets.QLabel(self.groupBox)
+        self.label_55.setGeometry(QtCore.QRect(260, 50, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_55.setFont(font)
+        self.label_55.setObjectName("label_55")
+        self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit.setGeometry(QtCore.QRect(140, 50, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit.setFont(font)
+        self.lineEdit.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit_1 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_1.setGeometry(QtCore.QRect(140, 90, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_1.setFont(font)
+        self.lineEdit_1.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_1.setObjectName("lineEdit_1")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_4.setGeometry(QtCore.QRect(140, 210, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_4.setFont(font)
+        self.lineEdit_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.lineEdit_5 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_5.setGeometry(QtCore.QRect(140, 250, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_5.setFont(font)
+        self.lineEdit_5.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_5.setObjectName("lineEdit_5")
+        self.label_56 = QtWidgets.QLabel(self.groupBox)
+        self.label_56.setGeometry(QtCore.QRect(260, 90, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_56.setFont(font)
+        self.label_56.setObjectName("label_56")
+        self.label_58 = QtWidgets.QLabel(self.groupBox)
+        self.label_58.setGeometry(QtCore.QRect(260, 250, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_58.setFont(font)
+        self.label_58.setObjectName("label_58")
+        self.label_47 = QtWidgets.QLabel(self.groupBox)
+        self.label_47.setGeometry(QtCore.QRect(30, 420, 271, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_47.setFont(font)
+        self.label_47.setObjectName("label_47")
+        self.label_10 = QtWidgets.QLabel(self.groupBox)
+        self.label_10.setGeometry(QtCore.QRect(260, 170, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_10.setFont(font)
+        self.label_10.setObjectName("label_10")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_3.setGeometry(QtCore.QRect(140, 170, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_3.setFont(font)
+        self.lineEdit_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.label_3 = QtWidgets.QLabel(self.groupBox)
+        self.label_3.setGeometry(QtCore.QRect(30, 170, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_3.setFont(font)
+        self.label_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_3.setObjectName("label_3")
+        self.label_2 = QtWidgets.QLabel(self.groupBox)
+        self.label_2.setGeometry(QtCore.QRect(60, 130, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_2.setObjectName("label_2")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_2.setGeometry(QtCore.QRect(140, 130, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_2.setFont(font)
+        self.lineEdit_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.label_14 = QtWidgets.QLabel(self.groupBox)
+        self.label_14.setGeometry(QtCore.QRect(260, 290, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_14.setFont(font)
+        self.label_14.setObjectName("label_14")
+        self.lineEdit_6 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_6.setGeometry(QtCore.QRect(140, 290, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_6.setFont(font)
+        self.lineEdit_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_6.setObjectName("lineEdit_6")
+        self.label_6 = QtWidgets.QLabel(self.groupBox)
+        self.label_6.setGeometry(QtCore.QRect(20, 290, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_6.setFont(font)
+        self.label_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_6.setObjectName("label_6")
+        self.label_17 = QtWidgets.QLabel(self.groupBox)
+        self.label_17.setGeometry(QtCore.QRect(260, 210, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_17.setFont(font)
+        self.label_17.setObjectName("label_17")
+        self.lineEdit_7 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_7.setGeometry(QtCore.QRect(140, 330, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_7.setFont(font)
+        self.lineEdit_7.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_7.setObjectName("lineEdit_7")
+        self.lineEdit_8 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_8.setGeometry(QtCore.QRect(140, 370, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_8.setFont(font)
+        self.lineEdit_8.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_8.setObjectName("lineEdit_8")
+        self.label_8 = QtWidgets.QLabel(self.groupBox)
+        self.label_8.setGeometry(QtCore.QRect(20, 370, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_8.setFont(font)
+        self.label_8.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_8.setObjectName("label_8")
+        self.label_19 = QtWidgets.QLabel(self.groupBox)
+        self.label_19.setGeometry(QtCore.QRect(260, 330, 81, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_19.setFont(font)
+        self.label_19.setObjectName("label_19")
+        self.label_7 = QtWidgets.QLabel(self.groupBox)
+        self.label_7.setGeometry(QtCore.QRect(20, 330, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_7.setFont(font)
+        self.label_7.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_7.setObjectName("label_7")
+        self.label_20 = QtWidgets.QLabel(self.groupBox)
+        self.label_20.setGeometry(QtCore.QRect(260, 370, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_20.setFont(font)
+        self.label_20.setObjectName("label_20")
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(840, 470, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_4.setGeometry(QtCore.QRect(700, 470, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_4.setFont(font)
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_5.setGeometry(QtCore.QRect(560, 470, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_5.setFont(font)
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
+        self.graphicsView.setGeometry(QtCore.QRect(520, 40, 471, 401))
+        self.graphicsView.setObjectName("graphicsView")
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(20, 30, 551, 21))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setUnderline(True)
+        self.label_9.setFont(font)
+        self.label_9.setObjectName("label_9")
+        self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_6.setGeometry(QtCore.QRect(770, 510, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_6.setFont(font)
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_7.setGeometry(QtCore.QRect(560, 510, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_7.setFont(font)
+        self.pushButton_7.setObjectName("pushButton_7")
+        HyperbolicWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(HyperbolicWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1047, 21))
+        self.menubar.setObjectName("menubar")
+        HyperbolicWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(HyperbolicWindow)
+        self.statusbar.setObjectName("statusbar")
+        HyperbolicWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(HyperbolicWindow)
+        QtCore.QMetaObject.connectSlotsByName(HyperbolicWindow)
+
+    def retranslateUi(self, HyperbolicWindow):
+        _translate = QtCore.QCoreApplication.translate
+        HyperbolicWindow.setWindowTitle(_translate("HyperbolicWindow", "MainWindow"))
+        self.groupBox.setTitle(_translate("HyperbolicWindow", "Input Two Element"))
+        self.label.setText(_translate("HyperbolicWindow", "Periapsis Altitude:"))
+        self.label_1.setText(_translate("HyperbolicWindow", "Periapsis Radius:"))
+        self.label_4.setText(_translate("HyperbolicWindow", "Semiminor Axis:"))
+        self.label_5.setText(_translate("HyperbolicWindow", "Periapsis Velocity:"))
+        self.label_55.setText(_translate("HyperbolicWindow", "[Km]"))
+        self.label_56.setText(_translate("HyperbolicWindow", "[Km]"))
+        self.label_58.setText(_translate("HyperbolicWindow", "[Km/s]"))
+        self.label_47.setText(_translate("HyperbolicWindow", "Given elements were:"))
+        self.label_10.setText(_translate("HyperbolicWindow", "[Km]"))
+        self.label_3.setText(_translate("HyperbolicWindow", "Semimajor Axis:"))
+        self.label_2.setText(_translate("HyperbolicWindow", "Eccentricity:"))
+        self.label_14.setText(_translate("HyperbolicWindow", "[Km/s]"))
+        self.label_6.setText(_translate("HyperbolicWindow", "Velocity at Infinity:"))
+        self.label_17.setText(_translate("HyperbolicWindow", "[Km]"))
+        self.label_8.setText(_translate("HyperbolicWindow", "Asymptote Angle:"))
+        self.label_19.setText(_translate("HyperbolicWindow", "[Km^2/s^2]"))
+        self.label_7.setText(_translate("HyperbolicWindow", "C3:"))
+        self.label_20.setText(_translate("HyperbolicWindow", "[deg]"))
+        self.pushButton_3.setText(_translate("HyperbolicWindow", "Export Data"))
+        self.pushButton_4.setText(_translate("HyperbolicWindow", "Graph Settings"))
+        self.pushButton_5.setText(_translate("HyperbolicWindow", "Clear"))
+        self.label_9.setText(_translate("HyperbolicWindow", "Hyperbolic Earth Orbit"))
+        self.pushButton_6.setText(_translate("HyperbolicWindow", "Calculate"))
+        self.pushButton_7.setText(_translate("HyperbolicWindow", "Exit"))
 
 
 
@@ -1589,7 +1912,9 @@ class Ui_TypeUnknown(object):
             ElipticalWindow.show()
             ui_elipt.recive_data(a, e)
         elif bt_clicked == 2:
-            pass
+            ui_parab.setupUi(ParabolicWindow)
+            ParabolicWindow.show()
+            ui_circ.recive_data(a)
         else:
             pass
 
@@ -1628,7 +1953,7 @@ class MyDynamicMplCanvas(MyMplCanvas):
     def compute_initial_figure(self):
         pass
 
-    def update_figure(self, a, b, planeta, x_correct=0):
+    def update_figure(self, a, b, planeta, x_correct=0, infinite=0):
         planet = Planetas(planeta)
 
         planets_available = ['Earth', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus',
@@ -1646,12 +1971,22 @@ class MyDynamicMplCanvas(MyMplCanvas):
         else:
             im = self.axes.imshow(image, extent=(-raio,raio,-raio,raio), alpha=1)
 
-        a = a
-        b = b
-        limit = 1.1 * a
-        x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
-        x -= x_correct
-        y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
+        if infinite == 0:
+
+            a = a
+            b = b
+            limit = 1.1 * a
+            x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
+            x -= x_correct
+            y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
+        elif infinite == 1: #a-periapsis_radius b-planet_radius
+            limit = 3.5 * planet.radius
+            x = np.linspace(-limit, limit, 1000)
+            y = np.linspace(-limit, limit, 1000)
+            alfa = 1 / (4 * a)
+            for i in range(0, len(x)):
+                x[i] = -alfa * y[i] ** 2 - a
+            x -= x_correct
 
         self.axes.cla()
         self.axes.grid(color='black', linestyle=':', linewidth=0.2)
@@ -1775,7 +2110,14 @@ class SaveFile(QWidget):
                 file.write('  -> Periapsis velocity: ' + str(print_dic['orbit_p_velocity']) + ' [Km/s]\n')
                 file.write('  -> Aposapsis velocity: ' + str(print_dic['orbit_a_velocity']) + ' [Km/s]\n\n')
                 #file.write('The given element was ' + print_dic['given_element'] + '\n\n\n')
-                pass
+            elif print_dic['orbit_type'] == 'parabolic':
+                file.write('Type: Parabolic\n')
+                file.write('Orbital Elements:\n')
+                file.write('  -> Periapsis altitude: ' + str(print_dic['orbit_p_altitude']) + ' [Km]\n')
+                file.write('  -> Periapsis radius: ' + str(print_dic['orbit_p_radius']) + ' [Km]\n')
+                file.write('  -> Semilatus rectum: ' + str(print_dic['orbit_p']) + '[Km]\n')
+                file.write('  -> Periapsis velocity: ' + str(print_dic['orbit_p_velocity']) + ' [Km/s]\n\n')
+                file.write('The given element was ' + print_dic['given_element'] + '\n\n\n')
             file.write('____________________________________________________________\n')
             file.write('')
             file.close()
@@ -1811,6 +2153,10 @@ if __name__ == "__main__":
     ParabolicWindow = QtWidgets.QMainWindow()
     ui_parab = Ui_ParabolicWindow()
     ui_parab.setupUi(ParabolicWindow)
+
+    HyperbolicWindow = QtWidgets.QMainWindow()
+    ui_hyper = Ui_HyperbolicWindow()
+    ui_hyper.setupUi(HyperbolicWindow)
 
     MainWindow.show()
     sys.exit(app.exec_())
