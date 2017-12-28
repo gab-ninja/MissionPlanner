@@ -150,6 +150,22 @@ def plane_changes(v, angle):
     return delta_v
 
 
+# - Data Juliana / Gregoriana ------------------------------------------------------------------------------------------
+#
+# Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (data disponível, elementos) em forma de dicionário
+#
+# -> parâmetros de saída: (dicionário completo)
+#-----------------------------------------------------------------------------------------------------------------------
+def julian_date(date):
+    if date['input'] == 'gregorian':
+        days = date['days']
+        months = date['month']
+        years = date['years']
+        date['julian'] = 367 * years - 7 * ((years + (months + 9) / 12) / 4) + (275 * months) / 9 + days + 1721013.5
+
+
 # - Parametros Planetas-------------------------------------------------------------------------------------------------
 #
 # 0-Earth 1-Moon 2-Sun 3-Mercury 4-Venus 5-Mars 6-Jupiter 7-Saturn 8-Uranus 9-Neptune 10-Pluto 11-Other
