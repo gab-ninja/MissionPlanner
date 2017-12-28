@@ -95,6 +95,7 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.pushButton_2.setFont(font)
         self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_2.clicked.connect(self.bt_eliptical_cicked)
         self.pushButton_5 = QtWidgets.QPushButton(self.groupBox_2)
         self.pushButton_5.setGeometry(QtCore.QRect(50, 160, 261, 31))
         font = QtGui.QFont()
@@ -207,6 +208,10 @@ class Ui_MainWindow(object):
 
     def bt_type_unknown_clicked(self):
         TypeUnknown.show()
+
+    def bt_eliptical_cicked(self):
+        ui_elipt.setupUi(ElipticalWindow)
+        ElipticalWindow.show()
 
 class Ui_CircularWindow(object):
     def __init__(self):
@@ -405,7 +410,6 @@ class Ui_CircularWindow(object):
         self.pushButton_3.setText(_translate("CircularWindow", "Calculate"))
         self.pushButton_5.setText(_translate("CircularWindow", "Exit"))
         self.label_9.setText(_translate("CircularWindow", "Circular " + self.planeta_obj.name + " Orbit"))
-        print(self.planeta_obj.name)
         self.pushButton_6.setText(_translate("CircularWindow", "Export Data"))
         self.pushButton_7.setText(_translate("CircularWindow", "Clear"))
         self.pushButton_8.setText(_translate("CircularWindow", "Graph Settings"))
@@ -591,6 +595,501 @@ class Ui_CircularWindow(object):
         #self.sc.save_figure_to_png()
         ex2 = SaveFile()
         ex2.saveFigureDialog(self.sc)
+
+
+class Ui_ElipticalWindow(object):
+    def __init__(self):
+        self.planeta = ui.comboBox.currentIndex()
+        self.planeta_obj = Planetas(self.planeta)
+        self.periodo_unit = 0
+        self.h_perigeu = 0
+        self.r_perigeu = 0
+        self.excentricidade = 0
+        self.semi_eixo_maior = 0
+        self.periodo = 0
+        self.h_apgeu = 0
+        self.r_apogeu = 0
+        self.v_perigeu = 0
+        self.v_apogeu = 0
+
+    def setupUi(self, ElipticalWindow):
+        ElipticalWindow.setObjectName("ElipticalWindow")
+        ElipticalWindow.setFixedSize(1047, 609)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("MDS-logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ElipticalWindow.setWindowIcon(icon)
+        self.centralwidget = QtWidgets.QWidget(ElipticalWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox.setGeometry(QtCore.QRect(60, 80, 401, 371))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.groupBox.setFont(font)
+        self.groupBox.setObjectName("groupBox")
+        self.label = QtWidgets.QLabel(self.groupBox)
+        self.label.setGeometry(QtCore.QRect(20, 50, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self.groupBox)
+        self.label_2.setGeometry(QtCore.QRect(30, 90, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(self.groupBox)
+        self.label_3.setGeometry(QtCore.QRect(60, 210, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_3.setFont(font)
+        self.label_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self.groupBox)
+        self.label_4.setGeometry(QtCore.QRect(20, 250, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_4.setFont(font)
+        self.label_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self.groupBox)
+        self.label_5.setGeometry(QtCore.QRect(260, 50, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit.setGeometry(QtCore.QRect(140, 50, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit.setFont(font)
+        self.lineEdit.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_2.setGeometry(QtCore.QRect(140, 90, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_2.setFont(font)
+        self.lineEdit_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_3.setGeometry(QtCore.QRect(140, 210, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_3.setFont(font)
+        self.lineEdit_3.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_4.setGeometry(QtCore.QRect(140, 250, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_4.setFont(font)
+        self.lineEdit_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.label_6 = QtWidgets.QLabel(self.groupBox)
+        self.label_6.setGeometry(QtCore.QRect(260, 90, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_6.setFont(font)
+        self.label_6.setObjectName("label_6")
+        self.label_8 = QtWidgets.QLabel(self.groupBox)
+        self.label_8.setGeometry(QtCore.QRect(260, 250, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+        self.comboBox = QtWidgets.QComboBox(self.groupBox)
+        self.comboBox.setGeometry(QtCore.QRect(260, 210, 73, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.comboBox.setFont(font)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.currentIndexChanged.connect(self.on_combobox_changed, self.comboBox.currentIndex())
+        self.label_7 = QtWidgets.QLabel(self.groupBox)
+        self.label_7.setGeometry(QtCore.QRect(30, 340, 271, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_7.setFont(font)
+        self.label_7.setObjectName("label_7")
+        self.label_10 = QtWidgets.QLabel(self.groupBox)
+        self.label_10.setGeometry(QtCore.QRect(260, 170, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_10.setFont(font)
+        self.label_10.setObjectName("label_10")
+        self.lineEdit_5 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_5.setGeometry(QtCore.QRect(140, 170, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_5.setFont(font)
+        self.lineEdit_5.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_5.setObjectName("lineEdit_5")
+        self.label_11 = QtWidgets.QLabel(self.groupBox)
+        self.label_11.setGeometry(QtCore.QRect(30, 170, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_11.setFont(font)
+        self.label_11.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_11.setObjectName("label_11")
+        self.label_12 = QtWidgets.QLabel(self.groupBox)
+        self.label_12.setGeometry(QtCore.QRect(60, 130, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_12.setFont(font)
+        self.label_12.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_12.setObjectName("label_12")
+        self.lineEdit_6 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_6.setGeometry(QtCore.QRect(140, 130, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_6.setFont(font)
+        self.lineEdit_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_6.setObjectName("lineEdit_6")
+        self.label_14 = QtWidgets.QLabel(self.groupBox)
+        self.label_14.setGeometry(QtCore.QRect(260, 290, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_14.setFont(font)
+        self.label_14.setObjectName("label_14")
+        self.lineEdit_7 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_7.setGeometry(QtCore.QRect(140, 290, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_7.setFont(font)
+        self.lineEdit_7.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_7.setObjectName("lineEdit_7")
+        self.label_15 = QtWidgets.QLabel(self.groupBox)
+        self.label_15.setGeometry(QtCore.QRect(30, 290, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_15.setFont(font)
+        self.label_15.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_15.setObjectName("label_15")
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(340, 480, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_4.setGeometry(QtCore.QRect(200, 480, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_4.setFont(font)
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_5.setGeometry(QtCore.QRect(60, 480, 121, 31))
+        self.pushButton_5.clicked.connect(self.bt_clear)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_5.setFont(font)
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
+        self.graphicsView.setGeometry(QtCore.QRect(540, 160, 471, 401))
+        self.graphicsView.setObjectName("graphicsView")
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(20, 30, 551, 21))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setUnderline(True)
+        self.label_9.setFont(font)
+        self.label_9.setObjectName("label_9")
+        self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_6.setGeometry(QtCore.QRect(270, 530, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_6.setFont(font)
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.pushButton_6.clicked.connect(self.bt_calculate)
+        self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_7.setGeometry(QtCore.QRect(60, 530, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_7.setFont(font)
+        self.pushButton_7.setObjectName("pushButton_7")
+        self.pushButton_7.clicked.connect(self.bt_exit)
+        self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox_2.setGeometry(QtCore.QRect(540, 20, 471, 131))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.groupBox_2.setFont(font)
+        self.groupBox_2.setObjectName("groupBox_2")
+        self.label_13 = QtWidgets.QLabel(self.groupBox_2)
+        self.label_13.setGeometry(QtCore.QRect(20, 40, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_13.setFont(font)
+        self.label_13.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_13.setObjectName("label_13")
+        self.label_16 = QtWidgets.QLabel(self.groupBox_2)
+        self.label_16.setGeometry(QtCore.QRect(20, 80, 111, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_16.setFont(font)
+        self.label_16.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_16.setObjectName("label_16")
+        self.label_19 = QtWidgets.QLabel(self.groupBox_2)
+        self.label_19.setGeometry(QtCore.QRect(260, 40, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_19.setFont(font)
+        self.label_19.setObjectName("label_19")
+        self.lineEdit_8 = QtWidgets.QLineEdit(self.groupBox_2)
+        self.lineEdit_8.setGeometry(QtCore.QRect(140, 40, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_8.setFont(font)
+        self.lineEdit_8.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_8.setObjectName("lineEdit_8")
+        self.lineEdit_9 = QtWidgets.QLineEdit(self.groupBox_2)
+        self.lineEdit_9.setGeometry(QtCore.QRect(140, 80, 113, 22))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.lineEdit_9.setFont(font)
+        self.lineEdit_9.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lineEdit_9.setObjectName("lineEdit_9")
+        self.label_20 = QtWidgets.QLabel(self.groupBox_2)
+        self.label_20.setGeometry(QtCore.QRect(260, 80, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_20.setFont(font)
+        self.label_20.setObjectName("label_20")
+        ElipticalWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(ElipticalWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1047, 21))
+        self.menubar.setObjectName("menubar")
+        ElipticalWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(ElipticalWindow)
+        self.statusbar.setObjectName("statusbar")
+        ElipticalWindow.setStatusBar(self.statusbar)
+        self.sc = MyDynamicMplCanvas(self.centralwidget)  # , width=5, height=4, dpi=100
+        self.sc.setGeometry(QtCore.QRect(540, 160, 471, 401))  # 550, 40, 575, 450
+        self.sc.setObjectName('graph')
+
+        self.retranslateUi(ElipticalWindow)
+        QtCore.QMetaObject.connectSlotsByName(ElipticalWindow)
+
+    def retranslateUi(self, ElipticalWindow):
+        self.planeta = ui.comboBox.currentIndex()
+        self.planeta_obj = Planetas(self.planeta)
+        _translate = QtCore.QCoreApplication.translate
+        ElipticalWindow.setWindowTitle(_translate("ElipticalWindow", "Eliptical Orbit"))
+        self.groupBox.setTitle(_translate("ElipticalWindow", "Input Two Element"))
+        self.label.setText(_translate("ElipticalWindow", "Periapsis Altitude:"))
+        self.label_2.setText(_translate("ElipticalWindow", "Periapsis Radius:"))
+        self.label_3.setText(_translate("ElipticalWindow", "Period:"))
+        self.label_4.setText(_translate("ElipticalWindow", "Apoapsis Altitude:"))
+        self.label_5.setText(_translate("ElipticalWindow", "[Km]"))
+        self.label_6.setText(_translate("ElipticalWindow", "[Km]"))
+        self.label_8.setText(_translate("ElipticalWindow", "[Km]"))
+        self.comboBox.setItemText(0, _translate("ElipticalWindow", "[s]"))
+        self.comboBox.setItemText(1, _translate("ElipticalWindow", "[h]"))
+        self.comboBox.setItemText(2, _translate("ElipticalWindow", "[days]"))
+        self.label_7.setText(_translate("ElipticalWindow", "Given elements were:"))
+        self.label_10.setText(_translate("ElipticalWindow", "[Km]"))
+        self.label_11.setText(_translate("ElipticalWindow", "Semimajor Axis:"))
+        self.label_12.setText(_translate("ElipticalWindow", "Eccentricity:"))
+        self.label_14.setText(_translate("ElipticalWindow", "[Km]"))
+        self.label_15.setText(_translate("ElipticalWindow", "Apoapsis Radius:"))
+        self.pushButton_3.setText(_translate("ElipticalWindow", "Export Data"))
+        self.pushButton_4.setText(_translate("ElipticalWindow", "Graph Settings"))
+        self.pushButton_5.setText(_translate("ElipticalWindow", "Clear"))
+        self.label_9.setText(_translate("ElipticalWindow", "Eliptical " + self.planeta_obj.name  + " Orbit"))
+        self.pushButton_6.setText(_translate("ElipticalWindow", "Calculate"))
+        self.pushButton_7.setText(_translate("ElipticalWindow", "Exit"))
+        self.groupBox_2.setTitle(_translate("ElipticalWindow", "Velocities"))
+        self.label_13.setText(_translate("ElipticalWindow", "Periapsis Velocity:"))
+        self.label_16.setText(_translate("ElipticalWindow", "Apoapsis Velocity:"))
+        self.label_19.setText(_translate("ElipticalWindow", "[Km/s]"))
+        self.label_20.setText(_translate("ElipticalWindow", "[Km/s]"))
+
+    def make_graph(self):
+        b = self.semi_eixo_maior * np.sqrt(1 - self.excentricidade ** 2)
+        x_correct = self.r_apogeu - self.semi_eixo_maior
+        self.sc.update_figure(self.semi_eixo_maior, b, self.planeta, x_correct)
+
+    def bt_calculate(self):
+        num_inputs = 0
+        p1 = ui_elipt.lineEdit.text().replace(',', '.')
+        p11 = 0
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 0
+                else:
+                    p11 = float(p1)
+                    id1 = 0
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_elipt.lineEdit_2.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 1
+                else:
+                    p11 = float(p1)
+                    id1 = 1
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_2.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_elipt.lineEdit_3.text().replace(',', '.')   # Period
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    if ui_elipt.comboBox.currentIndex() == 1:
+                        p2 *= 3600
+                    elif ui_elipt.comboBox.currentIndex() == 2:
+                        p2 *= (3600 * 24)
+                    id2 = 4
+                else:
+                    p11 = float(p1)
+                    if ui_elipt.comboBox.currentIndex() == 1:
+                        p11 *= 3600
+                    elif ui_elipt.comboBox.currentIndex() == 2:
+                        p11 *= (3600 * 24)
+                    id1 = 4
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_3.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_elipt.lineEdit_4.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 5
+                else:
+                    p11 = float(p1)
+                    id1 = 5
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_4.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_elipt.lineEdit_5.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 3
+                else:
+                    p11 = float(p1)
+                    id1 = 3
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_11.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_elipt.lineEdit_6.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 2
+                else:
+                    p11 = float(p1)
+                    id1 = 2
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_12.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_elipt.lineEdit_7.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 6
+                else:
+                    p11 = float(p1)
+                    id1 = 6
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_15.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+
+        if num_inputs != 2:
+            QMessageBox.critical(ElipticalWindow, "Error", 'This function requires exactly two elements')
+            return 0
+        else:
+            [self.h_perigeu, self.r_perigeu, self.excentricidade, self.semi_eixo_maior, self.periodo, self.h_apgeu,
+             self.r_apogeu, self.v_perigeu, self.v_apogeu] = orbita_eliptica(self.planeta , id1, p11, id2, p2)
+            ui_elipt.lineEdit.setText('%.4f' % self.h_perigeu)
+            ui_elipt.lineEdit_2.setText('%.4f' % self.r_perigeu)
+            ui_elipt.lineEdit_3.setText('%.6f' % self.periodo)
+            ui_elipt.lineEdit_4.setText('%.4f' % self.h_apgeu)
+            ui_elipt.lineEdit_5.setText('%.6f' % self.semi_eixo_maior)
+            ui_elipt.lineEdit_6.setText('%.10f' % self.excentricidade)
+            ui_elipt.lineEdit_7.setText('%.4f' % self.r_apogeu)
+            ui_elipt.lineEdit_8.setText('%.4f' % self.v_perigeu)
+            ui_elipt.lineEdit_9.setText('%.4f' % self.v_apogeu)
+            self.on_combobox_changed()
+            self.make_graph()
+
+    def bt_clear(self):
+        self.lineEdit.clear()
+        self.lineEdit_2.clear()
+        self.lineEdit_3.clear()
+        self.lineEdit_4.clear()
+        self.lineEdit_5.clear()
+        self.lineEdit_6.clear()
+        self.lineEdit_7.clear()
+        self.lineEdit_8.clear()
+        self.lineEdit_9.clear()
+        #self.periodo = 0
+        #self.sc.clear_figure()
+        #self.label_7.setText('Given element: ')
+
+    def on_combobox_changed(self):
+        self.periodo_unit = self.comboBox.currentIndex()
+        if  self.periodo:
+            aux = self.periodo #(Seconds)
+            if self.comboBox.currentIndex() == 0:  # s
+                ui_elipt.lineEdit_3.setText('%.6f' % aux)
+            elif self.comboBox.currentIndex() == 1:  # h
+                aux /= 3600
+                hours = int(aux)
+                aux -= hours
+                aux *= 60
+                minutes = int(aux)
+                aux -= minutes
+                secunds = aux * 60
+                ui_elipt.lineEdit_3.setText('%dh %dm %.2fs' % (hours,  minutes, secunds))
+            else:  # days
+                aux /= (3600*24)
+                ui_elipt.lineEdit_3.setText('%.6f' % aux)
+
+    def bt_exit(self):
+        ElipticalWindow.close()
 
 
 class Ui_TypeUnknown(object):
@@ -796,7 +1295,7 @@ class MyDynamicMplCanvas(MyMplCanvas):
     def compute_initial_figure(self):
         pass
 
-    def update_figure(self, a, b, planeta):
+    def update_figure(self, a, b, planeta, x_correct=0):
         planet = Planetas(planeta)
 
         planets_available = ['Earth', 'Moon', 'Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus',
@@ -818,6 +1317,7 @@ class MyDynamicMplCanvas(MyMplCanvas):
         b = b
         limit = 1.1 * a
         x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
+        x -= x_correct
         y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
 
         self.axes.cla()
@@ -926,6 +1426,7 @@ class SaveFile(QWidget):
             url = fileName
             sc.save_figure_to_png(url)
 
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
@@ -940,6 +1441,10 @@ if __name__ == "__main__":
     ui_type_unknown = Ui_TypeUnknown()
     ui_type_unknown.setupUi(TypeUnknown)
 
+    ElipticalWindow = QtWidgets.QMainWindow()
+    ui_elipt = Ui_ElipticalWindow()
+    ui_elipt.setupUi(ElipticalWindow)
+
     MainWindow.show()
     sys.exit(app.exec_())
 
@@ -951,3 +1456,4 @@ if __name__ == "__main__":
 #   - pre determined planets
 #   - txt output add coment character
 #   - Saturn issue
+#   - Acrscentar B0 (beta 0)
