@@ -212,6 +212,7 @@ class Ui_MainWindow(object):
         CircularWindow.show()
 
     def bt_type_unknown_clicked(self):
+        ui_type_unknown.setupUi(TypeUnknown)
         TypeUnknown.show()
 
     def bt_eliptical_cicked(self):
@@ -1766,9 +1767,6 @@ class Ui_HyperbolicWindow(object):
         self.pushButton_7.setText(_translate("HyperbolicWindow", "Exit"))
 
 
-
-
-
 class Ui_TypeUnknown(object):
     def setupUi(self, TypeUnknown):
         TypeUnknown.setObjectName("TypeUnknown")
@@ -2096,6 +2094,9 @@ class Ui_JulianDates(object):
     def setupUi(self, JulianDates):
         JulianDates.setObjectName("JulianDates")
         JulianDates.setFixedSize(751, 518)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("MDS-logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        JulianDates.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(JulianDates)
         self.centralwidget.setObjectName("centralwidget")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
@@ -2342,7 +2343,7 @@ class Ui_JulianDates(object):
 
     def retranslateUi(self, JulianDates):
         _translate = QtCore.QCoreApplication.translate
-        JulianDates.setWindowTitle(_translate("JulianDates", "Type Unknown"))
+        JulianDates.setWindowTitle(_translate("JulianDates", "Julian Dates"))
         self.groupBox.setTitle(_translate("JulianDates", "Julian Dates"))
         self.label.setText(_translate("JulianDates", "Day:"))
         self.label_2.setText(_translate("JulianDates", "Month:"))
