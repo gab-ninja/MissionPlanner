@@ -177,6 +177,7 @@ def orbita_desconhecida (planeta,r0,v0,gama0):
 # -> parâmetros de saída: (lta velocity)
 #-----------------------------------------------------------------------------------------------------------------------
 def plane_changes(v, angle):
+    angle = angle * (2 * math.pi) / (360)
     delta_v = 2 * v * math.sin(angle / 2)
     return delta_v
 
