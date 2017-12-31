@@ -11,11 +11,11 @@ includefiles = ['functions.py', 'julian_date_util.py', 'Earth-big.png', 'Earth-s
 build_exe_options = {'include_files':includefiles }
 
 setup(
-    name = 'myapp',
+    name = 'Mission Design Tool',
     version = '0.1',
-    description = 'A general enhancement utility',
-    author = 'lenin',
-    author_email = 'le...@null.com',
+    description = 'A general mission design tool',
+    author = 'Mario Campos',
+    author_email = 'mariogabrielcampos@gmail.com',
     options = {"build_exe": build_exe_options},
     executables = [Executable('mainwindow.py')]
 )

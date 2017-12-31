@@ -9,7 +9,17 @@ Saturn;60268;37939519.7;
 Uranus;25559;578158.5;
 Neptune;24764;6871307.8;
 Pluto;1195;1020.9;
-Other;0;0;
+Others;0;0;
 end;end;end;
 
 This values were obtained from book
+
+It is possible to add new planes by addind new line before  
+ 
+	"end;end;end"
+
+and following the syntax
+
+	"plane_name;plane_radius;plane_gravitational_parameter;"
+
+please make sure to input each planet in a different line
