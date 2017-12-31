@@ -638,6 +638,7 @@ class Ui_ElipticalWindow(object):
         self.r_apogeu = 0
         self.v_perigeu = 0
         self.v_apogeu = 0
+        self.given_elements = ''
 
     def setupUi(self, ElipticalWindow):
         ElipticalWindow.setObjectName("ElipticalWindow")
@@ -738,7 +739,7 @@ class Ui_ElipticalWindow(object):
         self.comboBox.addItem("")
         self.comboBox.currentIndexChanged.connect(self.on_combobox_changed, self.comboBox.currentIndex())
         self.label_7 = QtWidgets.QLabel(self.groupBox)
-        self.label_7.setGeometry(QtCore.QRect(30, 340, 271, 16))
+        self.label_7.setGeometry(QtCore.QRect(30, 340, 371, 16))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_7.setFont(font)
@@ -952,9 +953,11 @@ class Ui_ElipticalWindow(object):
                 if p11:
                     p2 = float(p1)
                     id2 = 0
+                    self.given_elements += self.label.text().replace(':', '').lower()
                 else:
                     p11 = float(p1)
                     id1 = 0
+                    self.given_elements = self.label.text().replace(':', '').lower() + ' and '
             except Exception:
                 QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label.text().replace(':', '').lower() +
                                      " value is not valid")
@@ -968,9 +971,11 @@ class Ui_ElipticalWindow(object):
                 if p11:
                     p2 = float(p1)
                     id2 = 1
+                    self.given_elements += self.label_2.text().replace(':', '').lower()
                 else:
                     p11 = float(p1)
                     id1 = 1
+                    self.given_elements = self.label_2.text().replace(':', '').lower() + ' and '
             except Exception:
                 QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_2.text().replace(':', '').lower() +
                                      " value is not valid")
@@ -988,6 +993,7 @@ class Ui_ElipticalWindow(object):
                     elif ui_elipt.comboBox.currentIndex() == 2:
                         p2 *= (3600 * 24)
                     id2 = 4
+                    self.given_elements += self.label_3.text().replace(':', '').lower()
                 else:
                     p11 = float(p1)
                     if ui_elipt.comboBox.currentIndex() == 1:
@@ -995,6 +1001,7 @@ class Ui_ElipticalWindow(object):
                     elif ui_elipt.comboBox.currentIndex() == 2:
                         p11 *= (3600 * 24)
                     id1 = 4
+                    self.given_elements = self.label_3.text().replace(':', '').lower() + ' and '
             except Exception:
                 QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_3.text().replace(':', '').lower() +
                                      " value is not valid")
@@ -1008,9 +1015,11 @@ class Ui_ElipticalWindow(object):
                 if p11:
                     p2 = float(p1)
                     id2 = 5
+                    self.given_elements += self.label_4.text().replace(':', '').lower()
                 else:
                     p11 = float(p1)
                     id1 = 5
+                    self.given_elements = self.label_4.text().replace(':', '').lower() + ' and '
             except Exception:
                 QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_4.text().replace(':', '').lower() +
                                      " value is not valid")
@@ -1024,9 +1033,11 @@ class Ui_ElipticalWindow(object):
                 if p11:
                     p2 = float(p1)
                     id2 = 3
+                    self.given_elements += self.label_11.text().replace(':', '').lower()
                 else:
                     p11 = float(p1)
                     id1 = 3
+                    self.given_elements = self.label_11.text().replace(':', '').lower() + ' and '
             except Exception:
                 QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_11.text().replace(':', '').lower() +
                                      " value is not valid")
@@ -1040,9 +1051,11 @@ class Ui_ElipticalWindow(object):
                 if p11:
                     p2 = float(p1)
                     id2 = 2
+                    self.given_elements += self.label_12.text().replace(':', '').lower()
                 else:
                     p11 = float(p1)
                     id1 = 2
+                    self.given_elements = self.label_12.text().replace(':', '').lower() + ' and '
             except Exception:
                 QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_12.text().replace(':', '').lower() +
                                      " value is not valid")
@@ -1056,9 +1069,11 @@ class Ui_ElipticalWindow(object):
                 if p11:
                     p2 = float(p1)
                     id2 = 6
+                    self.given_elements += self.label_15.text().replace(':', '').lower()
                 else:
                     p11 = float(p1)
                     id1 = 6
+                    self.given_elements = self.label_15.text().replace(':', '').lower() + ' and '
             except Exception:
                 QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_15.text().replace(':', '').lower() +
                                      " value is not valid")
@@ -1085,6 +1100,7 @@ class Ui_ElipticalWindow(object):
                 ui_elipt.lineEdit_7.setText('%.4f' % self.r_apogeu)
                 ui_elipt.lineEdit_8.setText('%.6f' % self.v_perigeu)
                 ui_elipt.lineEdit_9.setText('%.6f' % self.v_apogeu)
+                self.label_7.setText('Given elements were: ' + self.given_elements)
                 self.on_combobox_changed()
                 self.make_graph()
 
@@ -1099,6 +1115,7 @@ class Ui_ElipticalWindow(object):
         self.lineEdit_8.clear()
         self.lineEdit_9.clear()
         self.sc.clear_figure()
+        self.label_7.setText('Given elements were: ')
         #self.label_7.setText('Given element: ')
 
     def on_combobox_changed(self):
@@ -1140,8 +1157,8 @@ class Ui_ElipticalWindow(object):
             'orbit_eccentricity': self.excentricidade,
             'orbit_semimajor_axis': self.semi_eixo_maior,
             'orbit_p_velocity': self.v_perigeu,
-            'orbit_a_velocity': self.v_apogeu
-            #'given_element' : self.given_element
+            'orbit_a_velocity': self.v_apogeu,
+            'given_elements' : self.given_elements
         }
         ex = SaveFile()
         ex.saveFileDialog(print_dic)
@@ -1776,6 +1793,10 @@ class Ui_HyperbolicWindow(object):
         self.pushButton_6.setText(_translate("HyperbolicWindow", "Calculate"))
         self.pushButton_7.setText(_translate("HyperbolicWindow", "Exit"))
 
+    def make_graph(self):
+        x_correct = 0
+        self.sc.update_figure(self.semi_eixo_maior, self.semi_eixo_menor, self.planeta, x_correct=x_correct, infinite=2)
+
     def bt_calculate(self):
         num_inputs = 0
         p1 = ui_hyper.lineEdit.text().replace(',', '.')
@@ -1965,8 +1986,7 @@ class Ui_HyperbolicWindow(object):
                 self.label_47.setText('Given elements were: ' + self.given_elements)
 
 
-                #self.make_graph()
-
+                self.make_graph()
 
     def bt_clear(self):
         self.h_perigeu = 0
@@ -1990,10 +2010,8 @@ class Ui_HyperbolicWindow(object):
         self.lineEdit_7.clear()
         self.lineEdit_8.clear()
 
-
     def bt_exit(self):
         HyperbolicWindow.close()
-
 
     def bt_export(self):
         #self.planeta = ui.comboBox.currentIndex()
@@ -2003,11 +2021,16 @@ class Ui_HyperbolicWindow(object):
             'planet_name': self.planeta_obj.name,
             'planet_radius': self.planeta_obj.radius,
             'planet_u': self.planeta_obj.u,
-            'orbit_p_altitude': self.altitude_perigeu,
-            'orbit_p_radius': self.raio_perigeu,
-            'orbit_p': self.p,
-            'orbit_p_velocity': self.velocidade_perigeu,
-            'given_element' : self.given_element
+            'orbit_p_altitude': self.h_perigeu,
+            'orbit_p_radius': self.r_perigeu,
+            'orbit_e': self.excentricidade,
+            'orbit_a': self.semi_eixo_maior,
+            'orbit_b': self.semi_eixo_menor,
+            'orbit_inf_velocity': self.v_infinito,
+            'orbit_c3': self.c3,
+            'orbit_beta': self.beta,
+            'orbit_p_velocity': self.v_perigeu,
+            'given_elements' : self.given_elements
         }
         ex = SaveFile()
         ex.saveFileDialog(print_dic)
@@ -2020,7 +2043,6 @@ class Ui_HyperbolicWindow(object):
     def recive_data(self, radius):
         self.r_perigeu = radius
         self.lineEdit_1.setText('%.6f' % self.raio_perigeu)
-
 
 
 class Ui_TypeUnknown(object):
@@ -2768,15 +2790,14 @@ class MyDynamicMplCanvas(MyMplCanvas):
         else:
             im = self.axes.imshow(image, extent=(-raio,raio,-raio,raio), alpha=1)
 
-        if infinite == 0:
-
+        if infinite == 0: #CIRCULAR AND ELLIPTICAL
             a = a
             b = b
             limit = 1.1 * a
             x = -a * np.sin(np.linspace(0, 2 * np.pi, 1000))
             x -= x_correct
             y = b * np.cos(np.linspace(0, 2 * np.pi, 1000))
-        elif infinite == 1: #a-periapsis_radius b-planet_radius
+        elif infinite == 1: # PARABOLIC a-periapsis_radius b-planet_radius
             limit = 3.5 * planet.radius
             x = np.linspace(-limit, limit, 1000)
             y = np.linspace(-limit, limit, 1000)
@@ -2784,6 +2805,15 @@ class MyDynamicMplCanvas(MyMplCanvas):
             for i in range(0, len(x)):
                 x[i] = -alfa * y[i] ** 2 - a
             x -= x_correct
+        elif infinite == 2: # HYPERBOLIC a-a b-b
+            limit = 3.5 * planet.radius
+            teta = np.linspace(0, np.pi, np.pi/1000)
+            x = [0] * len(teta)
+            y = [0] * len(teta)
+            for i in range(0, len(x)):
+                x[i] = b * np.tan(teta[i])
+                y[i] = a / np.cos(teta[i])
+            #x -= x_correct
 
         self.axes.cla()
         self.axes.grid(color='black', linestyle=':', linewidth=0.2)
@@ -2906,7 +2936,7 @@ class SaveFile(QWidget):
                 file.write('Velocities:\n')
                 file.write('  -> Periapsis velocity: ' + str(print_dic['orbit_p_velocity']) + ' [Km/s]\n')
                 file.write('  -> Aposapsis velocity: ' + str(print_dic['orbit_a_velocity']) + ' [Km/s]\n\n')
-                #file.write('The given element was ' + print_dic['given_element'] + '\n\n\n')
+                file.write('Given element were ' + print_dic['given_elements'] + '\n\n\n')
             elif print_dic['orbit_type'] == 'parabolic':
                 file.write('Type: Parabolic\n')
                 file.write('Orbital Elements:\n')
@@ -2915,8 +2945,21 @@ class SaveFile(QWidget):
                 file.write('  -> Semilatus rectum: ' + str(print_dic['orbit_p']) + '[Km]\n')
                 file.write('  -> Periapsis velocity: ' + str(print_dic['orbit_p_velocity']) + ' [Km/s]\n\n')
                 file.write('The given element was ' + print_dic['given_element'] + '\n\n\n')
+            elif print_dic['orbit_type'] == 'hyperbolic':
+                file.write('Type: Hyperbolic\n')
+                file.write('Orbital Elements:\n')
+                file.write('  -> Periapsis altitude: ' + str(print_dic['orbit_p_altitude']) + ' [Km]\n')
+                file.write('  -> Periapsis radius: ' + str(print_dic['orbit_p_radius']) + ' [Km]\n')
+                file.write('  -> Eccentricity: ' + str(print_dic['orbit_e']) + '\n')
+                file.write('  -> Semimajor Axis: ' + str(print_dic['orbit_a']) + '[Km]\n')
+                file.write('  -> Semiminor Axis: ' + str(print_dic['orbit_b']) + '[Km]\n')
+                file.write('  -> Periapsis velocity: ' + str(print_dic['orbit_p_velocity']) + ' [Km/s]\n')
+                file.write('  -> Velocity at infinity: ' + str(print_dic['orbit_inf_velocity']) + ' [Km/s]\n')
+                file.write('  -> C3: ' + str(print_dic['orbit_c3']) + ' [Km^2/s^2]\n')
+                file.write('  -> Asymptote angle: ' + str(print_dic['orbit_beta']) + ' [degrees]\n\n')
+                file.write('Given element were ' + print_dic['given_elements'] + '\n\n\n')
             file.write('____________________________________________________________\n')
-            file.write('')
+            file.write('Find out more in the about section in proram main page')
             file.close()
 
     def saveFigureDialog(self, sc):
