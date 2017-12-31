@@ -1,4 +1,4 @@
-#
+﻿#
 # MISSION PLANNER
 #
 # This is a software that helps user to determine orbits and oyher orbital mechanics parameters
@@ -18,10 +18,7 @@ from functools import partial
 from math import *
 import sys
 import numpy as np
-#from pyqtgraph.Qt import QtGui, QtCore
-#import pyqtgraph as pg
 import matplotlib
-matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -29,6 +26,8 @@ import matplotlib.patches as patches
 import matplotlib.cbook as cbook
 import matplotlib.image as mpimg
 import os.path
+from tkinter import *
+matplotlib.use('Qt5Agg')
 
 class Ui_MainWindow(object):
     def __init__(self):
