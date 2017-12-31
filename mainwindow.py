@@ -1072,17 +1072,21 @@ class Ui_ElipticalWindow(object):
         else:
             [self.h_perigeu, self.r_perigeu, self.excentricidade, self.semi_eixo_maior, self.periodo, self.h_apgeu,
              self.r_apogeu, self.v_perigeu, self.v_apogeu] = orbita_eliptica(self.planeta , id1, p11, id2, p2)
-            ui_elipt.lineEdit.setText('%.4f' % self.h_perigeu)
-            ui_elipt.lineEdit_2.setText('%.4f' % self.r_perigeu)
-            ui_elipt.lineEdit_3.setText('%.6f' % self.periodo)
-            ui_elipt.lineEdit_4.setText('%.4f' % self.h_apgeu)
-            ui_elipt.lineEdit_5.setText('%.6f' % self.semi_eixo_maior)
-            ui_elipt.lineEdit_6.setText('%.10f' % self.excentricidade)
-            ui_elipt.lineEdit_7.setText('%.4f' % self.r_apogeu)
-            ui_elipt.lineEdit_8.setText('%.6f' % self.v_perigeu)
-            ui_elipt.lineEdit_9.setText('%.6f' % self.v_apogeu)
-            self.on_combobox_changed()
-            self.make_graph()
+            if self.h_perigeu == -1:
+                QMessageBox.information(ElipticalWindow, "Error", "The elements given are dependant. Please insert two "
+                                                                  "independant elements")
+            else:
+                ui_elipt.lineEdit.setText('%.4f' % self.h_perigeu)
+                ui_elipt.lineEdit_2.setText('%.4f' % self.r_perigeu)
+                ui_elipt.lineEdit_3.setText('%.6f' % self.periodo)
+                ui_elipt.lineEdit_4.setText('%.4f' % self.h_apgeu)
+                ui_elipt.lineEdit_5.setText('%.6f' % self.semi_eixo_maior)
+                ui_elipt.lineEdit_6.setText('%.10f' % self.excentricidade)
+                ui_elipt.lineEdit_7.setText('%.4f' % self.r_apogeu)
+                ui_elipt.lineEdit_8.setText('%.6f' % self.v_perigeu)
+                ui_elipt.lineEdit_9.setText('%.6f' % self.v_apogeu)
+                self.on_combobox_changed()
+                self.make_graph()
 
     def bt_clear(self):
         self.lineEdit.clear()
@@ -1476,15 +1480,16 @@ class Ui_HyperbolicWindow(object):
     def __init__(self):
         self.planeta = ui.comboBox.currentIndex()
         self.planeta_obj = Planetas(self.planeta)
-        self.h_periapsis = 0
-        self.r_periapsis = 0
+        self.h_perigeu = 0
+        self.r_perigeu = 0
         self.excentricidade = 0
         self.semi_eixo_maior = 0
         self.semi_eixo_menor = 0
-        self.v_periapsis = 0
-        self.v_infinity = 0
+        self.v_perigeu = 0
+        self.v_infinito = 0
         self.c3 = 0
-        self.angle = 0
+        self.beta = 0
+        self.given_elements = ''
 
     def setupUi(self, HyperbolicWindow):
         HyperbolicWindow.setObjectName("HyperbolicWindow")
@@ -1575,7 +1580,7 @@ class Ui_HyperbolicWindow(object):
         self.label_58.setFont(font)
         self.label_58.setObjectName("label_58")
         self.label_47 = QtWidgets.QLabel(self.groupBox)
-        self.label_47.setGeometry(QtCore.QRect(30, 420, 271, 16))
+        self.label_47.setGeometry(QtCore.QRect(30, 420, 371, 16))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_47.setFont(font)
@@ -1686,18 +1691,21 @@ class Ui_HyperbolicWindow(object):
         font.setPointSize(10)
         self.pushButton_3.setFont(font)
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.bt_export)
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_4.setGeometry(QtCore.QRect(700, 470, 121, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.pushButton_4.setFont(font)
         self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_4.clicked.connect(self.bt_graph)
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_5.setGeometry(QtCore.QRect(560, 470, 121, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.pushButton_5.setFont(font)
         self.pushButton_5.setObjectName("pushButton_5")
+        self.pushButton_5.clicked.connect(self.bt_clear)
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
         self.graphicsView.setGeometry(QtCore.QRect(520, 40, 471, 401))
         self.graphicsView.setObjectName("graphicsView")
@@ -1714,12 +1722,14 @@ class Ui_HyperbolicWindow(object):
         font.setPointSize(10)
         self.pushButton_6.setFont(font)
         self.pushButton_6.setObjectName("pushButton_6")
+        self.pushButton_6.clicked.connect(self.bt_calculate)
         self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_7.setGeometry(QtCore.QRect(560, 510, 191, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.pushButton_7.setFont(font)
         self.pushButton_7.setObjectName("pushButton_7")
+        self.pushButton_7.clicked.connect(self.bt_exit)
         HyperbolicWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(HyperbolicWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1047, 21))
@@ -1739,7 +1749,7 @@ class Ui_HyperbolicWindow(object):
         self.planeta = ui.comboBox.currentIndex()
         self.planeta_obj = Planetas(self.planeta)
         _translate = QtCore.QCoreApplication.translate
-        HyperbolicWindow.setWindowTitle(_translate("HyperbolicWindow", "MainWindow"))
+        HyperbolicWindow.setWindowTitle(_translate("HyperbolicWindow", "Hyperbolic Orbit"))
         self.groupBox.setTitle(_translate("HyperbolicWindow", "Input Two Element"))
         self.label.setText(_translate("HyperbolicWindow", "Periapsis Altitude:"))
         self.label_1.setText(_translate("HyperbolicWindow", "Periapsis Radius:"))
@@ -1765,6 +1775,252 @@ class Ui_HyperbolicWindow(object):
         self.label_9.setText(_translate("HyperbolicWindow", "Hyperbolic " + self.planeta_obj.name + " Orbit"))
         self.pushButton_6.setText(_translate("HyperbolicWindow", "Calculate"))
         self.pushButton_7.setText(_translate("HyperbolicWindow", "Exit"))
+
+    def bt_calculate(self):
+        num_inputs = 0
+        p1 = ui_hyper.lineEdit.text().replace(',', '.')
+        p11 = 0
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 0
+                    self.given_elements += self.label.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 0
+                    self.given_elements = self.label.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_1.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 1
+                    self.given_elements += self.label_1.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 1
+                    self.given_elements = self.label_1.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_1.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_2.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 2
+                    self.given_elements += self.label_2.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 2
+                    self.given_elements = self.label_2.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_2.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_3.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 3
+                    self.given_elements += self.label_3.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 3
+                    self.given_elements = self.label_3.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_3.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_4.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 4
+                    self.given_elements += self.label_4.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 4
+                    self.given_elements = self.label_4.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_4.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_5.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 5
+                    self.given_elements += self.label_5.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 5
+                    self.given_elements = self.label_5.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_5.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_6.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 6
+                    self.given_elements += self.label_6.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 6
+                    self.given_elements = self.label_6.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_6.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_7.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 7
+                    self.given_elements += self.label_7.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 7
+                    self.given_elements = self.label_7.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_7.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_hyper.lineEdit_8.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 8
+                    self.given_elements += self.label_8.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 8
+                    self.given_elements = self.label_8.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(HyperbolicWindow, "Error", "The " + self.label_8.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+
+        if num_inputs != 2:
+            QMessageBox.critical(HyperbolicWindow, "Error", 'This function requires exactly two elements')
+            return 0
+        else:
+            [self.h_perigeu, self.r_perigeu, self.excentricidade, self.semi_eixo_maior, self.semi_eixo_menor,
+             self.v_perigeu, self.v_infinito, self.c3, self.beta] = orbita_hiperbolica(self.planeta , id1, p11, id2, p2)
+            if self.h_perigeu == -1:
+                QMessageBox.information(HyperbolicWindow, "Error", "The elements given are dependant. Please insert two "
+                                                                  "independant elements")
+            else:
+                self.lineEdit.setText('%.4f' % self.h_perigeu)
+                self.lineEdit_1.setText('%.5f' % self.r_perigeu)
+                self.lineEdit_2.setText('%.8f' % self.excentricidade)
+                self.lineEdit_3.setText('%.4f' % self.semi_eixo_maior)
+                self.lineEdit_4.setText('%.4f' % self.semi_eixo_menor)
+                self.lineEdit_5.setText('%.6f' % self.v_perigeu)
+                self.lineEdit_6.setText('%.6f' % self.v_infinito)
+                self.lineEdit_7.setText('%.6f' % self.c3)
+                self.lineEdit_8.setText('%.6f' % self.beta)
+
+                self.label_47.setText('Given elements were: ' + self.given_elements)
+
+
+                #self.make_graph()
+
+
+    def bt_clear(self):
+        self.h_perigeu = 0
+        self.r_perigeu = 0
+        self.excentricidade = 0
+        self.semi_eixo_maior = 0
+        self.semi_eixo_menor = 0
+        self.v_perigeu = 0
+        self.v_infinito = 0
+        self.c3 = 0
+        self.beta = 0
+        self.given_elements = ''
+        self.label_47.setText('Given elements were: ' + self.given_elements)
+        self.lineEdit.clear()
+        self.lineEdit_1.clear()
+        self.lineEdit_2.clear()
+        self.lineEdit_3.clear()
+        self.lineEdit_4.clear()
+        self.lineEdit_5.clear()
+        self.lineEdit_6.clear()
+        self.lineEdit_7.clear()
+        self.lineEdit_8.clear()
+
+
+    def bt_exit(self):
+        HyperbolicWindow.close()
+
+
+    def bt_export(self):
+        #self.planeta = ui.comboBox.currentIndex()
+        #planeta = self.planeta_obj
+        print_dic = {
+            'orbit_type': 'hyperbolic',
+            'planet_name': self.planeta_obj.name,
+            'planet_radius': self.planeta_obj.radius,
+            'planet_u': self.planeta_obj.u,
+            'orbit_p_altitude': self.altitude_perigeu,
+            'orbit_p_radius': self.raio_perigeu,
+            'orbit_p': self.p,
+            'orbit_p_velocity': self.velocidade_perigeu,
+            'given_element' : self.given_element
+        }
+        ex = SaveFile()
+        ex.saveFileDialog(print_dic)
+
+    def bt_graph(self):
+        #self.sc.save_figure_to_png()
+        ex2 = SaveFile()
+        ex2.saveFigureDialog(self.sc)
+
+    def recive_data(self, radius):
+        self.r_perigeu = radius
+        self.lineEdit_1.setText('%.6f' % self.raio_perigeu)
+
 
 
 class Ui_TypeUnknown(object):

@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 
 def functions():
     file = open('planet_data.txt', 'r')
@@ -59,7 +59,8 @@ def orbita_eliptica (planeta,id1,p1,id2,p2):
     planet = Planetas(planeta)
     res = [0,0,0,0,0,0,0,0,0]
     if (id1 == 0 and id2 == 1) or (id1 == 3 and id2 == 4) or  (id1 == 5 and id2 == 6):
-        print('Erro: Inseridos dois valores dependentes')
+        #print('Erro: Inseridos dois valores dependentes')
+        res[0] = -1
     else:
         res[id1] = p1
         res[id2] = p2
@@ -150,6 +151,154 @@ def orbita_parabolica (planeta,id,p1):
         res[0] = res[1] - planet.radius
         res[2] = 2 * res[1]
     return res
+
+
+# - Orbitas hiperbólicas -----------------------------------------------------------------------------------------------
+#
+# 0-h.perigeu 1-r.perigeu 2-excentricidade 3-semi.eixo.maior 4-periodo 5-h.apgeu 6-r.apogeu 7-v.perigeu 8-v.apogeu
+#
+# Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (planeta, id do parametro inserido 1, valor do parametro com id 1, id parametro2, valor do
+# parametro com id 2)
+# -> parâmetros de saída: (ans[0,1,2,3,4,5,6,7])
+#-----------------------------------------------------------------------------------------------------------------------
+def orbita_hiperbolica (planeta,id1,p1,id2,p2):
+    hp = 0
+    rp = 1
+    e = 2
+    a = 3
+    b = 4
+    v_p = 5
+    v_inf = 6
+    c3 = 7
+    beta = 8
+
+    planet = Planetas(planeta)
+
+    res = [0,0,0,0,0,0,0,0,0]
+    res_available = [0,0,0,0,0,0,0,0,0]
+
+    res[id1] = p1
+    res[id2] = p2
+
+    res_available[id1] = 1
+    res_available[id2] = 1
+
+    if res_available[beta]:
+        res[beta] = math.radians(res[beta])
+
+    i = 0
+
+    while (i < 15) and ( not (np.prod(res_available)) ):
+        if not(res_available[hp]):
+            if res_available[rp]:
+                res[hp] = res[rp] - planet.radius
+                res_available[hp] = 1
+
+        if not (res_available[rp]):
+            if res_available[hp]:
+                res[rp] = res[hp] + planet.radius
+                res_available[rp] = 1
+            if res_available[e] and res_available[b]:
+                res[rp] = res[b] * math.sqrt((res[e] - 1)/(res[e] + 1))
+                res_available[rp] = 1
+            if res_available[e] and res_available[a]:
+                res[rp] = res[a] * (res[e] - 1)
+                res_available[rp] = 1
+            if res_available[b] and res_available[beta]:
+                res[rp] = res[b] * math.tan(res[beta] / 2)
+                res_available[rp] = 1
+            if res_available[a] and res_available[b]:
+                res[rp] = -res[a] + math.sqrt(res[a] ** 2 + res[b] ** 2)
+                res_available[rp] = 1
+            if res_available[b] and res_available[v_inf]:
+                res[rp] = - (planet.u)/(res[v_inf] ** 2) + math.sqrt(((planet.u)/(res[v_inf] ** 2)) ** 2 + res[b] ** 2)
+                res_available[rp] = 1
+
+        if not (res_available[e]):
+            if res_available[beta]:
+                res[e] = 1/(math.cos(res[beta]))
+                res_available[e] = 1
+            if res_available[rp] and res_available[a]:
+                res[e] = 1 + res[rp] / res[a]
+                res_available[e] = 1
+            if res_available[a] and res_available[b]:
+                res[e] = math.sqrt(1 + (res[b] ** 2)/(res[a] ** 2))
+                res_available[e] = 1
+
+        if not (res_available[a]):
+            if res_available[v_inf]:
+                res[a] = planet.u / (res[v_inf] ** 2)
+                res_available[a] = 1
+            if res_available[e] and res_available[b]:
+                res[a] = res[b] / math.sqrt(res[e] ** 2 - 1)
+                res_available[a] = 1
+            if res_available[rp] and res_available[e]:
+                res[a] = res[rp] / (res[e] - 1)
+                res_available[a] = 1
+            if res_available[rp] and res_available[b]:
+                res[a] = (res[b] ** 2 - res[rp] ** 2)/(2 * res[rp])
+                res_available[a] = 1
+            if res_available[rp] and res_available[v_p]:
+                res_available[a] = 0
+
+        if not (res_available[b]):
+            if res_available[rp] and res_available[e]:
+                res[b] = res[rp] * math.sqrt((res[e] + 1)/(res[e] - 1))
+                res_available[b] = 1
+            if res_available[e] and res_available[a]:
+                res[b] = res[a] * math.sqrt(res[e] ** 2 - 1)
+                res_available[b] = 1
+            if res_available[rp] and res_available[v_inf]:
+                res[b] = res[rp] * math.sqrt((2 * planet.u)/(res[rp] * res[v_inf] ** 2) + 1)
+                res_available[b] = 1
+
+        if not (res_available[v_p]):
+            if res_available[rp] and res_available[v_inf]:
+                res[v_p] = math.sqrt((2 * planet.u)/(res[rp]) + res[v_inf] ** 2)
+                res_available[v_p] = 1
+            if res_available[rp] and res_available[a]:
+                res[v_p] = math.sqrt((2 * planet.u)/(res[rp]) + (planet.u)/(res[a]))
+                res_available[v_p] = 1
+
+        if not (res_available[v_inf]):
+            if res_available[a]:
+                res[v_inf] = math.sqrt(planet.u / res[a])
+                res_available[v_inf] = 1
+            if res_available[c3]:
+                res[v_inf] = math.sqrt(res[c3])
+                res_available[v_inf] = 1
+
+        if not (res_available[c3]):
+            if res_available[v_inf]:
+                res[c3] = res[v_inf] ** 2
+                res_available[c3] = 1
+
+        if not (res_available[beta]):
+            if res_available[e]:
+                res[beta] = math.acos(1/res[e])
+                res_available[beta] = 1
+            if res_available[a] and res_available[b]:
+                res[beta] = math.atan(res[b]/res[a])
+                res_available[beta] = 1
+            if res_available[rp] and res_available[b]:
+                res[beta] = math.atan((2 * res[b] * res[rp])/(res[b] ** 2 - res[rp] ** 2))
+                res_available[beta] = 1
+            if res_available[b] and res_available[v_inf]:
+                res[beta] = math.atan((res[b] * res[v_inf] ** 2)/(planet.u))
+                res_available[beta] = 1
+
+        i += 1
+
+    if i == 15:
+        res[0] = -1
+
+    if res_available[beta]:
+        res[beta] = math.degrees(res[beta])
+
+    return res
+
 
 
 
