@@ -3011,7 +3011,7 @@ def initial_print():
           '          \n')
     print('This software was developed to help planning space orbits.\nFor further information please see the about '
           'section on main page.\n')
-    print(' -| This window may be minimized | -')
+    print(' -| This window could be minimized during program execution but not closed |-')
 
 
 if __name__ == "__main__":
