@@ -2997,15 +2997,21 @@ class SaveFile(QWidget):
             sc.save_figure_to_png(url)
 
 def initial_print():
-    print('  __  __   _               _                     ____                 _                     _____                   _ \n')
-    print(' |  \/  | (_)  ___   ___  (_)   ___    _ __     |  _ \    ___   ___  (_)   __ _   _ __     |_   _|   ___     ___   | |\n')
-    print(' | |\/| | | | / __| / __| | |  / _ \  | \'_ \    | | | |  / _ \ / __| | |  / _` | | \'_ \      | |    / _ \   / _ \  | |\n')
-    print(' | |  | | | | \__ \ \__ \ | | | (_) | | | | |   | |_| | |  __/ \__ \ | | | (_| | | | | |     | |   | (_) | | (_) | | |\n')
-    print(' |_|  |_| |_| |___/ |___/ |_|  \___/  |_| |_|   |____/   \___| |___/ |_|  \__, | |_| |_|     |_|    \___/   \___/  |_|\n')
-    print('                                                                          |___/                                       \n\n')
-    print('This software was developed to help planning space orbits.\n')
-    print('For further information see the about section on main page.\n\n')
-    print(' -| This window may be minimized | -\n')
+    print('  __  __   _               _                     ____                 _                     _____           '
+          '        _ ')
+    print(' |  \/  | (_)  ___   ___  (_)   ___    _ __     |  _ \    ___   ___  (_)   __ _   _ __     |_   _|   ___    '
+          ' ___   | |')
+    print(' | |\/| | | | / __| / __| | |  / _ \  | \'_ \    | | | |  / _ \ / __| | |  / _` | | \'_ \      | |    / _ \ '
+          '  / _ \  | |')
+    print(' | |  | | | | \__ \ \__ \ | | | (_) | | | | |   | |_| | |  __/ \__ \ | | | (_| | | | | |     | |   | (_) | |'
+          ' (_) | | |')
+    print(' |_|  |_| |_| |___/ |___/ |_|  \___/  |_| |_|   |____/   \___| |___/ |_|  \__, | |_| |_|     |_|    \___/   '
+          '\___/  |_|')
+    print('                                                                          |___/                             '
+          '          \n')
+    print('This software was developed to help planning space orbits.\nFor further information please see the about '
+          'section on main page.\n')
+    print(' -| This window may be minimized | -')
 
 
 if __name__ == "__main__":
