@@ -19,6 +19,7 @@ from math import *
 import sys
 import numpy as np
 import matplotlib
+matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -27,7 +28,7 @@ import matplotlib.cbook as cbook
 import matplotlib.image as mpimg
 import os.path
 from tkinter import *
-matplotlib.use('Qt5Agg')
+
 
 class Ui_MainWindow(object):
     def __init__(self):
@@ -1793,8 +1794,9 @@ class Ui_HyperbolicWindow(object):
         self.pushButton_7.setText(_translate("HyperbolicWindow", "Exit"))
 
     def make_graph(self):
-        x_correct = 0
+        x_correct = -(self.semi_eixo_maior  + self.r_perigeu)
         self.sc.update_figure(self.semi_eixo_maior, self.semi_eixo_menor, self.planeta, x_correct=x_correct, infinite=2)
+        self.sc.set_y_axes(25000, 25000)
 
     def bt_calculate(self):
         num_inputs = 0
@@ -2008,6 +2010,7 @@ class Ui_HyperbolicWindow(object):
         self.lineEdit_6.clear()
         self.lineEdit_7.clear()
         self.lineEdit_8.clear()
+        self.sc.clear_figure()
 
     def bt_exit(self):
         HyperbolicWindow.close()
@@ -2805,14 +2808,30 @@ class MyDynamicMplCanvas(MyMplCanvas):
                 x[i] = -alfa * y[i] ** 2 - a
             x -= x_correct
         elif infinite == 2: # HYPERBOLIC a-a b-b
-            limit = 3.5 * planet.radius
-            teta = np.linspace(0, np.pi, np.pi/1000)
-            x = [0] * len(teta)
-            y = [0] * len(teta)
+            ymin = -2.5 * planet.radius
+            ymax = 2.5 * planet.radius
+
+            xmin = 2.5 * planet.radius
+
+            a = a
+            b = b
+
+            try:
+                tmin = acosh(xmin / a)
+            except Exception:
+                tmin = 1
+            #tmax = acosh(xmax / a) 1.42073792366796
+
+            #tmin = 2
+            tmax = tmin
+
+            t = np.linspace(-tmin, tmax, 500)
+            x = np.zeros(len(t))
+            y = np.zeros(len(t))
             for i in range(0, len(x)):
-                x[i] = b * np.tan(teta[i])
-                y[i] = a / np.cos(teta[i])
-            #x -= x_correct
+                x[i] = -a * cosh(t[i])
+                y[i] = b * sinh(t[i])
+            x -= x_correct
 
         self.axes.cla()
         self.axes.grid(color='black', linestyle=':', linewidth=0.2)
@@ -2827,6 +2846,8 @@ class MyDynamicMplCanvas(MyMplCanvas):
         self.axes.axis('equal')
         self.draw()
 
+    def set_y_axes(self, ymin, ymax):
+        self.axes.set_ylim(-ymin, ymax)
 
 class SaveFile(QWidget):
     def __init__(self):
