@@ -2895,9 +2895,14 @@ class SaveFile(QWidget):
             file = open(fileName + '.txt', 'w')
             file.write('############################################################\n')
             file.write('#                                                          #\n')
-            file.write('#                 MISSION DESIGN TOOL                      #\n')
+            file.write('#          __  __         ____          _____              #\n')
+            file.write('#         |  \/  |       |  _ \        |_   _|             #\n')
+            file.write('#         | |\/| |       | | | |         | |               #\n')
+            file.write('#         | |  | |  _    | |_| |  _      | |    _          #\n')
+            file.write('#         |_|  |_| (_)   |____/  (_)     |_|   (_)         #\n')
             file.write('#                                                          #\n')
-            file.write('#                Orbit Definition Tool                     #\n')
+            file.write('#                                                          #\n')
+            file.write('#                 MISSION DESIGN TOOL                      #\n')
             file.write('#                                                          #\n')
             file.write('############################################################\n\n')
             file.write('===| Central Body |=========================================\n\n')
@@ -2991,12 +2996,25 @@ class SaveFile(QWidget):
             url = fileName
             sc.save_figure_to_png(url)
 
+def initial_print():
+    print('  __  __   _               _                     ____                 _                     _____                   _ \n')
+    print(' |  \/  | (_)  ___   ___  (_)   ___    _ __     |  _ \    ___   ___  (_)   __ _   _ __     |_   _|   ___     ___   | |\n')
+    print(' | |\/| | | | / __| / __| | |  / _ \  | \'_ \    | | | |  / _ \ / __| | |  / _` | | \'_ \      | |    / _ \   / _ \  | |\n')
+    print(' | |  | | | | \__ \ \__ \ | | | (_) | | | | |   | |_| | |  __/ \__ \ | | | (_| | | | | |     | |   | (_) | | (_) | | |\n')
+    print(' |_|  |_| |_| |___/ |___/ |_|  \___/  |_| |_|   |____/   \___| |___/ |_|  \__, | |_| |_|     |_|    \___/   \___/  |_|\n')
+    print('                                                                          |___/                                       \n\n')
+    print('This software was developed to help planning space orbits.\n')
+    print('For further information see the about section on main page.\n\n')
+    print(' -| This window may be minimized | -\n')
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+
+    initial_print()
 
     CircularWindow = QtWidgets.QMainWindow()
     ui_circ = Ui_CircularWindow()
