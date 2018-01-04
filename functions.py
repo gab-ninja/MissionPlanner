@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 
 def functions():
     file = open('planet_data.txt', 'r')
@@ -57,69 +57,296 @@ def orbita_circular (planeta,id,p1):
 #-----------------------------------------------------------------------------------------------------------------------
 def orbita_eliptica (planeta,id1,p1,id2,p2):
     planet = Planetas(planeta)
+
+    h_p = 0
+    r_p = 1
+    e = 2
+    a = 3
+    t = 4
+    h_a = 5
+    r_a = 6
+    v_p = 7
+    v_a = 8
+
     res = [0,0,0,0,0,0,0,0,0]
-    if (id1 == 0 and id2 == 1) or (id1 == 3 and id2 == 4) or  (id1 == 5 and id2 == 6):
-        print('Erro: Inseridos dois valores dependentes')
-    else:
-        res[id1] = p1
-        res[id2] = p2
-        #determinação dos parametros dependentes
-        if id1 == 0:
-            res[1] = res[0] + planet.radius
-        elif id1 == 1:
-            res[0] = res[1] - planet.radius
-        elif id1 == 3:
-            res[4] = ((2 * math.pi)/ math.sqrt(planet.u)) * res[3] ** (3 / 2)
-        elif id1 == 4:
-            res[3] = ((res[4] * math.sqrt(planet.u)) / (2 * math.pi)) ** (2 / 3)
-        elif id1 == 5:
-            res[6] = res[5] + planet.radius
-        elif id1 == 6:
-            res[5] = res[6] - planet.radius
+    res_available = [0,0,0,0,0,0,0,0,0]
 
-        if id2 == 3:
-            res[4] = ((2 * math.pi)/ math.sqrt(planet.u)) * res[3] ** (3 / 2)
-        elif id2 == 4:
-            res[3] = ((res[4] * math.sqrt(planet.u)) / (2 * math.pi)) ** (2 / 3)
-        elif id2 == 5:
-            res[6] = res[5] + planet.radius
-        elif id2 == 6:
-            res[5] = res[6] - planet.radius
+    res[id1] = p1
+    res[id2] = p2
 
-        #determinação de rp, e, a, ra. É suposto ter 2 destes parâmetros
-        if res[2] != 0:
-            if res[1] != 0: # e rp
-                res[3] = res[1]/(1 - res[2])
-                res[6] = res[1] * (1 + res[2])/(1 - res[2])
-            elif res[3] != 0: # e a
-                res[1] = res[3] * (1 - res[2])
-                res[6] = res[3] * (1 + res[2])
-            elif res[6] != 0: # e ra (n usei o else para prevenir erros)
-                res[1] = res[6] * (1 - res[2])/(1 + res[2])
-                res[3] = res[6]/(1 + res[2])
-        else:
-            if res[1] != 0:
-                if res[3] != 0: # rp a
-                    res[2] = 1 - res[1]/res[3]
-                    res[6] = 2 * res[3] - res[1]
-                else: # rp ra
-                    res[2] = (res[6] - res[1])/(res[6] + res[1])
-                    res[3] = (res[1] + res[6])/2
-            else: # a ra
-                res[1] = 2 * res[3] - res[6]
-                res[2] = res[6]/res[3] - 1
+    res_available[id1] = 1
+    res_available[id2] = 1
 
-        if res[0] == 0:
-            res[0] = res[1] - planet.radius
-        if res[5] == 0:
-            res[5] = res[6] - planet.radius
-        if res[4] == 0:
-            res[4] = (2 * math.pi)/ math.sqrt(planet.u) * res[3] ** (3/2)
+    i = 0
 
-        res[7] = math.sqrt(2 * planet.u * (1/res[1] - 1/(2 * res[3])))
-        res[8] = math.sqrt(2 * planet.u * (1 / res[6] - 1 / (2 * res[3])))
+    while (i < 15) and (not (np.prod(res_available))):
+        if not (res_available[h_p]):
+            if res_available[r_p]:
+                res[h_p] = res[r_p] - planet.radius
+                res_available[h_p] = 1
+
+        if not (res_available[h_a]):
+            if res_available[r_a]:
+                res[h_a] = res[r_a] - planet.radius
+                res_available[h_a] = 1
+
+        if not (res_available[r_p]):
+            if res_available[h_p]:
+                res[r_p] = res[h_p] + planet.radius
+                res_available[r_p] = 1
+            if res_available[a] and res_available[e]:
+                res[r_p] = res[a] * (1 - res[e])
+                res_available[r_p] = 1
+            if res_available[r_a] and res_available[e]:
+                res[r_p] = res[r_a] * (1 - res[e])/(1 + res[e])
+                res_available[r_p] = 1
+            if res_available[a] and res_available[r_a]:
+                res[r_p] = 2 * res[a] - res[r_a]
+                res_available[r_p] = 1
+                
+        if not (res_available[r_a]):
+            if res_available[h_a]:
+                res[r_a] = res[h_a] + planet.radius
+                res_available[r_a] = 1
+            if res_available[a] and res_available[e]:
+                res[r_a] = res[a] * (1 + res[e])
+                res_available[r_a] = 1
+            if res_available[r_p] and res_available[e]:
+                res[r_a] = res[r_p] * (1 + res[e])/(1 - res[e])
+                res_available[r_a] = 1
+            if res_available[a] and res_available[r_p]:
+                res[r_a] = 2 * res[a] - res[r_p]
+                res_available[r_a] = 1
+
+        if not (res_available[e]):
+            if res_available[r_a] and res_available[a]:
+                res[e] = res[r_a] / res[a] - 1
+                res_available[e] = 1
+            if res_available[r_a] and res_available[r_p]:
+                res[e] = (res[r_a] - res[r_p])/(res[r_a] + res[r_p])
+                res_available[e] = 1
+            if res_available[r_p] and res_available[a]:
+                res[e] = 1 - res[r_p] / res[a]
+                res_available[e] = 1
+
+        if not (res_available[a]):
+            if res_available[r_a] and res_available[r_p]:
+                res[a] = (res[r_a] + res[r_p]) / 2
+                res_available[a] = 1
+            if res_available[r_p] and res_available[e]:
+                res[a] = res[r_p] / (1 - res[e])
+                res_available[a] = 1
+            if res_available[r_a] and res_available[e]:
+                res[a] = res[r_a] / (1 + res[e])
+                res_available[a] = 1
+            if res_available[r_p] and res_available[v_p]:
+                res[a] = (planet.u * res[r_p])/(2 * planet.u - res[v_p] ** 2 * res[r_p])
+                res_available[a] = 1
+            if res_available[r_a] and res_available[v_a]:
+                res[a] = (planet.u * res[r_a])/(2 * planet.u - res[v_a] ** 2 * res[r_a])
+                res_available[a] = 1
+
+        if not (res_available[t]):
+            if res_available[a]:
+                res[t] = 2 * np.pi * np.sqrt((res[a] ** 3) / planet.u)
+                res_available[t] = 1
+
+        if not (res_available[v_a]):
+            if res_available[a] and res_available[r_a]:
+                res[v_a] = np.sqrt(((2 * planet.u) / res[r_a]) - (planet.u / res[a]))
+                res_available[v_a] = 1
+
+        if not (res_available[v_p]):
+            if res_available[a] and res_available[r_p]:
+                res[v_p] = np.sqrt(((2 * planet.u) / res[r_p]) - (planet.u / res[a]))
+                res_available[v_p] = 1
+
+        i += 1
+
+    if i == 15:
+        res[0] = -1
+
 
     return res
+
+
+# - Orbitas parabólicas ------------------------------------------------------------------------------------------------
+#
+# 0-p.altitude 1-p.raio 2-semi-latus_rectum 3-p.velocidade   Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (planeta, id do parametro inserido, valor do parametro com determinado id)
+# -> parâmetros de saída: (ans[altitude_perigeu, raio_perigeu, p, velocidade_perigeu])
+#-----------------------------------------------------------------------------------------------------------------------
+def orbita_parabolica (planeta,id,p1):
+    planet = Planetas(planeta)
+    res = [None]*4
+    res[id] = p1
+    if id == 0:
+        res[1] = p1 + planet.radius
+        res[2] = 2 * res[1]
+        res[3] = math.sqrt(2 * planet.u/res[1])
+    elif id == 1:
+        res[0] = res[1] - planet.radius
+        res[2] = 2 * res[1]
+        res[3] = math.sqrt(2 * planet.u / res[1])
+    elif id == 2:
+        res[1] = res[2] / 2
+        res[0] = res[1] - planet.radius
+        res[3] = math.sqrt(2 * planet.u / res[1])
+    elif id == 3:
+        res[1] = 2 * planet.u / (res[3] ** 2)
+        res[0] = res[1] - planet.radius
+        res[2] = 2 * res[1]
+    return res
+
+
+# - Orbitas hiperbólicas -----------------------------------------------------------------------------------------------
+#
+# 0-h.perigeu 1-r.perigeu 2-excentricidade 3-semi.eixo.maior 4-periodo 5-h.apgeu 6-r.apogeu 7-v.perigeu 8-v.apogeu
+#
+# Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (planeta, id do parametro inserido 1, valor do parametro com id 1, id parametro2, valor do
+# parametro com id 2)
+# -> parâmetros de saída: (ans[0,1,2,3,4,5,6,7])
+#-----------------------------------------------------------------------------------------------------------------------
+def orbita_hiperbolica (planeta,id1,p1,id2,p2):
+    hp = 0
+    rp = 1
+    e = 2
+    a = 3
+    b = 4
+    v_p = 5
+    v_inf = 6
+    c3 = 7
+    beta = 8
+
+    planet = Planetas(planeta)
+
+    res = [0,0,0,0,0,0,0,0,0]
+    res_available = [0,0,0,0,0,0,0,0,0]
+
+    res[id1] = p1
+    res[id2] = p2
+
+    res_available[id1] = 1
+    res_available[id2] = 1
+
+    if res_available[beta]:
+        res[beta] = math.radians(res[beta])
+
+    i = 0
+
+    while (i < 15) and ( not (np.prod(res_available)) ):
+        if not(res_available[hp]):
+            if res_available[rp]:
+                res[hp] = res[rp] - planet.radius
+                res_available[hp] = 1
+
+        if not (res_available[rp]):
+            if res_available[hp]:
+                res[rp] = res[hp] + planet.radius
+                res_available[rp] = 1
+            if res_available[e] and res_available[b]:
+                res[rp] = res[b] * math.sqrt((res[e] - 1)/(res[e] + 1))
+                res_available[rp] = 1
+            if res_available[e] and res_available[a]:
+                res[rp] = res[a] * (res[e] - 1)
+                res_available[rp] = 1
+            if res_available[b] and res_available[beta]:
+                res[rp] = res[b] * math.tan(res[beta] / 2)
+                res_available[rp] = 1
+            if res_available[a] and res_available[b]:
+                res[rp] = -res[a] + math.sqrt(res[a] ** 2 + res[b] ** 2)
+                res_available[rp] = 1
+            if res_available[b] and res_available[v_inf]:
+                res[rp] = - (planet.u)/(res[v_inf] ** 2) + math.sqrt(((planet.u)/(res[v_inf] ** 2)) ** 2 + res[b] ** 2)
+                res_available[rp] = 1
+
+        if not (res_available[e]):
+            if res_available[beta]:
+                res[e] = 1/(math.cos(res[beta]))
+                res_available[e] = 1
+            if res_available[rp] and res_available[a]:
+                res[e] = 1 + res[rp] / res[a]
+                res_available[e] = 1
+            if res_available[a] and res_available[b]:
+                res[e] = math.sqrt(1 + (res[b] ** 2)/(res[a] ** 2))
+                res_available[e] = 1
+
+        if not (res_available[a]):
+            if res_available[v_inf]:
+                res[a] = planet.u / (res[v_inf] ** 2)
+                res_available[a] = 1
+            if res_available[e] and res_available[b]:
+                res[a] = res[b] / math.sqrt(res[e] ** 2 - 1)
+                res_available[a] = 1
+            if res_available[rp] and res_available[e]:
+                res[a] = res[rp] / (res[e] - 1)
+                res_available[a] = 1
+            if res_available[rp] and res_available[b]:
+                res[a] = (res[b] ** 2 - res[rp] ** 2)/(2 * res[rp])
+                res_available[a] = 1
+            if res_available[rp] and res_available[v_p]:
+                res_available[a] = 0
+
+        if not (res_available[b]):
+            if res_available[rp] and res_available[e]:
+                res[b] = res[rp] * math.sqrt((res[e] + 1)/(res[e] - 1))
+                res_available[b] = 1
+            if res_available[e] and res_available[a]:
+                res[b] = res[a] * math.sqrt(res[e] ** 2 - 1)
+                res_available[b] = 1
+            if res_available[rp] and res_available[v_inf]:
+                res[b] = res[rp] * math.sqrt((2 * planet.u)/(res[rp] * res[v_inf] ** 2) + 1)
+                res_available[b] = 1
+
+        if not (res_available[v_p]):
+            if res_available[rp] and res_available[v_inf]:
+                res[v_p] = math.sqrt((2 * planet.u)/(res[rp]) + res[v_inf] ** 2)
+                res_available[v_p] = 1
+            if res_available[rp] and res_available[a]:
+                res[v_p] = math.sqrt((2 * planet.u)/(res[rp]) + (planet.u)/(res[a]))
+                res_available[v_p] = 1
+
+        if not (res_available[v_inf]):
+            if res_available[a]:
+                res[v_inf] = math.sqrt(planet.u / res[a])
+                res_available[v_inf] = 1
+            if res_available[c3]:
+                res[v_inf] = math.sqrt(res[c3])
+                res_available[v_inf] = 1
+
+        if not (res_available[c3]):
+            if res_available[v_inf]:
+                res[c3] = res[v_inf] ** 2
+                res_available[c3] = 1
+
+        if not (res_available[beta]):
+            if res_available[e]:
+                res[beta] = math.acos(1/res[e])
+                res_available[beta] = 1
+            if res_available[a] and res_available[b]:
+                res[beta] = math.atan(res[b]/res[a])
+                res_available[beta] = 1
+            if res_available[rp] and res_available[b]:
+                res[beta] = math.atan((2 * res[b] * res[rp])/(res[b] ** 2 - res[rp] ** 2))
+                res_available[beta] = 1
+            if res_available[b] and res_available[v_inf]:
+                res[beta] = math.atan((res[b] * res[v_inf] ** 2)/(planet.u))
+                res_available[beta] = 1
+
+        i += 1
+
+    if i == 15:
+        res[0] = -1
+
+    if res_available[beta]:
+        res[beta] = math.degrees(res[beta])
+
+    return res
+
+
 
 
 # - Tipo de Orbita Desconhecido ----------------------------------------------------------------------------------------
@@ -131,9 +358,12 @@ def orbita_eliptica (planeta,id1,p1,id2,p2):
 # -> parâmetros de saída: ([a, e])
 #-----------------------------------------------------------------------------------------------------------------------
 def orbita_desconhecida (planeta,r0,v0,gama0):
+    gama0 = np.deg2rad(gama0)
     planet = Planetas(planeta)
+
     a = r0 / (2 - (r0 * v0 ** 2)/planet.u)
     e = math.sqrt(((r0 * v0 ** 2)/planet.u -1) ** 2 * (math.cos(gama0) ** 2 + (math.sin(gama0)) ** 2))
+
     return [a,e]
 
 
@@ -146,8 +376,25 @@ def orbita_desconhecida (planeta,r0,v0,gama0):
 # -> parâmetros de saída: (lta velocity)
 #-----------------------------------------------------------------------------------------------------------------------
 def plane_changes(v, angle):
+    angle = angle * (2 * math.pi) / (360)
     delta_v = 2 * v * math.sin(angle / 2)
     return delta_v
+
+
+# - Data Juliana / Gregoriana ------------------------------------------------------------------------------------------
+#
+# Unidades SI [Km em vez de m]
+#
+# -> parametros de entrada: (data disponível, elementos) em forma de dicionário
+#
+# -> parâmetros de saída: (dicionário completo)
+#-----------------------------------------------------------------------------------------------------------------------
+def julian_date(date):
+    if date['input'] == 'gregorian':
+        days = date['days']
+        months = date['month']
+        years = date['years']
+        date['julian'] = 367 * years - 7 * ((years + (months + 9) / 12) / 4) + (275 * months) / 9 + days + 1721013.5
 
 
 # - Parametros Planetas-------------------------------------------------------------------------------------------------
