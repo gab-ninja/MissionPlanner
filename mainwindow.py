@@ -1080,6 +1080,42 @@ class Ui_ElipticalWindow(object):
                 return 0
                 pass
             num_inputs += 1
+        p1 = ui_elipt.lineEdit_8.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 7
+                    self.given_elements += self.label_13.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 7
+                    self.given_elements = self.label_13.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_13.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
+        p1 = ui_elipt.lineEdit_9.text().replace(',', '.')
+        if p1:
+            id = 0
+            try:
+                if p11:
+                    p2 = float(p1)
+                    id2 = 8
+                    self.given_elements += self.label_16.text().replace(':', '').lower()
+                else:
+                    p11 = float(p1)
+                    id1 = 8
+                    self.given_elements = self.label_16.text().replace(':', '').lower() + ' and '
+            except Exception:
+                QMessageBox.critical(ElipticalWindow, "Error", "The " + self.label_16.text().replace(':', '').lower() +
+                                     " value is not valid")
+                return 0
+                pass
+            num_inputs += 1
 
         if num_inputs != 2:
             QMessageBox.critical(ElipticalWindow, "Error", 'This function requires exactly two elements')
@@ -2042,9 +2078,11 @@ class Ui_HyperbolicWindow(object):
         ex2 = SaveFile()
         ex2.saveFigureDialog(self.sc)
 
-    def recive_data(self, radius):
-        self.r_perigeu = radius
-        self.lineEdit_1.setText('%.6f' % self.raio_perigeu)
+    def recive_data(self, a, e):
+        self.semi_eixo_maior = a
+        self.excentricidade = e
+        self.lineEdit_2.setText('%.8f' % self.excentricidade)
+        self.lineEdit_3.setText('%.4f' % self.semi_eixo_maior)
 
 
 class Ui_TypeUnknown(object):
@@ -2233,7 +2271,9 @@ class Ui_TypeUnknown(object):
             ParabolicWindow.show()
             ui_circ.recive_data(a)
         else:
-            pass
+            ui_hyper.setupUi(HyperbolicWindow)
+            HyperbolicWindow.show()
+            ui_hyper.recive_data(a, e)
 
 
 class Ui_PlaneChanges(object):
