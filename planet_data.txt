@@ -13,3 +13,10 @@ Other;0;0;
 end;end;end;
 
 This values were obtained from book
+
+For adding new planets insert a new line whit the syntax:
+        "Planet_name;Planet_radius;Planet_u;"
+Make sure that this line is inserted before the following line:
+        "end;end;end"
+and also use ";" to separate values.
+Note: for decimal part must be used a dor "." 

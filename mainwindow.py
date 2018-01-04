@@ -149,6 +149,13 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.pushButton_9.setFont(font)
         self.pushButton_9.setObjectName("pushButton_9")
+        self.pushButton_10 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_10.setGeometry(QtCore.QRect(500, 390, 121, 31))
+        self.pushButton_10.clicked.connect(self.bt_about)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_10.setFont(font)
+        self.pushButton_10.setObjectName("pushButton_10")
         self.groupBox_2.raise_()
         self.groupBox.raise_()
         self.label.raise_()
@@ -179,12 +186,13 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Parabolic"))
         self.pushButton_2.setText(_translate("MainWindow", "Elliptical"))
         self.pushButton_5.setText(_translate("MainWindow", "Type Unknown"))
-        self.label.setText(_translate("MainWindow", "Mission Design Software"))
+        self.label.setText(_translate("MainWindow", "Mission Design Tool"))
         self.groupBox_3.setTitle(_translate("MainWindow", "Utilities"))
         self.pushButton_6.setText(_translate("MainWindow", "Julian Dates"))
         self.pushButton_7.setText(_translate("MainWindow", "Ephemeris"))
         self.pushButton_8.setText(_translate("MainWindow", "Propellant Mass"))
         self.pushButton_9.setText(_translate("MainWindow", "Plane Changes"))
+        self.pushButton_10.setText(_translate("MainWindow", "About"))
 
     def on_combobox_changed(self):
         value = self.comboBox.currentIndex()
@@ -207,6 +215,21 @@ class Ui_MainWindow(object):
 
     def bt_type_unknown_clicked(self):
         TypeUnknown.show()
+
+    def bt_about(self):
+        print('about')
+        QMessageBox.information(CircularWindow, "About", "This program was based on ORBWIN: AIAA Mission Design "
+                                                         "Software in Spacecraft Mission Design, Second Edition, "
+                                                         "Charles D. Brown. \n This tool was developed by Mário Campos, "
+                                                         "with the supervision of Dr. Paulo Gil. \n It integrates the "
+                                                         "satelites course in Aerospace Engineering at Instituto "
+                                                         "Superior Tecnico in Lisbon. \n For further information please "
+                                                         "contact mariogabrielcampos@gmail.com \n Source : "
+                                                         "hfvkjebwbvwlbn")
+        #QMessageBox.critical(CircularWindow, "Error", "The altitude value is not valid")
+
+
+
 
 class Ui_CircularWindow(object):
     def __init__(self):
