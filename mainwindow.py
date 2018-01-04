@@ -154,7 +154,6 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.pushButton_9.setFont(font)
         self.pushButton_9.setObjectName("pushButton_9")
-<<<<<<< HEAD
         self.pushButton_10 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_10.setGeometry(QtCore.QRect(500, 390, 121, 31))
         self.pushButton_10.clicked.connect(self.bt_about)
@@ -162,9 +161,7 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.pushButton_10.setFont(font)
         self.pushButton_10.setObjectName("pushButton_10")
-=======
         self.pushButton_9.clicked.connect(self.bt_plane_changes)
->>>>>>> 2dc6c7851ff1a6064cb2b2df9659c2f4aa2fef32
         self.groupBox_2.raise_()
         self.groupBox.raise_()
         self.label.raise_()
@@ -226,9 +223,7 @@ class Ui_MainWindow(object):
         ui_type_unknown.setupUi(TypeUnknown)
         TypeUnknown.show()
 
-<<<<<<< HEAD
     def bt_about(self):
-        print('about')
         QMessageBox.information(CircularWindow, "About", "This program was based on ORBWIN: AIAA Mission Design "
                                                          "Software in Spacecraft Mission Design, Second Edition, "
                                                          "Charles D. Brown. \n This tool was developed by Mário Campos, "
@@ -239,8 +234,6 @@ class Ui_MainWindow(object):
                                                          "hfvkjebwbvwlbn")
         #QMessageBox.critical(CircularWindow, "Error", "The altitude value is not valid")
 
-
-=======
     def bt_eliptical_cicked(self):
         ui_elipt.setupUi(ElipticalWindow)
         ElipticalWindow.show()
@@ -260,7 +253,6 @@ class Ui_MainWindow(object):
     def bt_julian(self):
         ui_julian.setupUi(JulianDates)
         JulianDates.show()
->>>>>>> 2dc6c7851ff1a6064cb2b2df9659c2f4aa2fef32
 
 
 class Ui_CircularWindow(object):
