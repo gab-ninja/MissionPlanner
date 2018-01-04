@@ -230,8 +230,8 @@ class Ui_MainWindow(object):
                                                          "with the supervision of Dr. Paulo Gil. \n It integrates the "
                                                          "satelites course in Aerospace Engineering at Instituto "
                                                          "Superior Tecnico in Lisbon. \n For further information please "
-                                                         "contact mariogabrielcampos@gmail.com \n Source : "
-                                                         "hfvkjebwbvwlbn")
+                                                         "contact mariogabrielcampos@gmail.com \n Source :https://githu"
+                                                         "b.com/mariogabrielcampos/MissionPlanner")
         #QMessageBox.critical(CircularWindow, "Error", "The altitude value is not valid")
 
     def bt_eliptical_cicked(self):
